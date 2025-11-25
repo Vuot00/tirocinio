@@ -10,7 +10,7 @@ L'ottimizzazione si raggiunge attraverso due passaggi chiave: l'ordinamento prio
 
 L'algoritmo garantisce la massima probabilità di successo al progetto più urgente, rispettando il principio di determinismo:
 
-* **Ottimalità per la Scadenza:** I progetti sono processati in ordine di scadenza (più vicina $\to$ priorità più alta). Questo assicura che le risorse vengano allocate in modo da **proteggere per prime le scadenze più critiche**.
+* **Ottimalità per la Scadenza:** I progetti sono processati in ordine di scadenza (più vicina ==> priorità più alta). Questo assicura che le risorse vengano allocate in modo da **proteggere per prime le scadenze più critiche**.
 * **Stabilità del Piano:** Quando le ore di una risorsa sono assegnate a un progetto prioritario (P1), esse vengono **sottratte permanentemente** dalla disponibilità residua per i progetti meno urgenti (P2, P3). In questo modo, il piano di P1 è stabile e immune da future riassegnazioni o "furti" di risorse da parte di progetti successivi.
 
 ## 2. Criterio di Selezione della Risorsa
