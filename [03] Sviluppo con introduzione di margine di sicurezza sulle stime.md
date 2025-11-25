@@ -1,4 +1,4 @@
-# Introduzione del margine di sicurezza nelle stime – Documentazione
+# Introduzione del margine di sicurezza nelle stime
 
 # 1. Funzionamento del sistema senza margine
 
