@@ -72,8 +72,9 @@ per ogni progetto P:
         ore_residuo_progetto -= (ore_da_assegnare * giorni_nel_periodo)
         R.disponibilita_residua_totale -= (ore_da_assegnare * giorni_nel_periodo)
         R.ore_già_assegnate += (ore_da_assegnare * giorni_nel_periodo)
-```
         
         // Solo la prima volta che la risorsa viene allocata:
         if R è stata allocata per la prima volta:
             risorse_assegnate_correnti += 1
+
+```
