@@ -139,20 +139,16 @@ per ogni progetto:
              esci
         assegna ore giornaliere alla risorsa
         aggiorna disponibilità della risorsa
+```
 # ⚠️ 6. Gli unici due scenari critici rimasti
-Scenario critico 1 – Risorse insufficienti
+## Scenario critico 1 – Risorse insufficienti
 Se:
-
-
-somma ore disponibili < ore richieste
-allora il progetto non può essere fatto, punto.
-Non è colpa del sistema: è una condizione reale.
-Scenario critico 2 – Stime iniziali errate
+   * somma ore disponibili < ore richieste allora il progetto non può essere fatto, punto. Non è colpa del sistema: è una condizione reale.
+## Scenario critico 2 – Stime iniziali errate
 Se un progetto richiede più ore del previsto:
+   * nessun algoritmo al mondo può salvarlo.
 
-nessun algoritmo al mondo può salvarlo.
-Per attenuare questo, puoi aggiungere:
-
-margine di sicurezza del 10–20% sulle stime,
-stima basata su esperienza storica,
-complessità parametrica (“se progetto harder → +30%”).
+## Per attenuare questo, puoi aggiungere:
+   * margine di sicurezza del 10–20% sulle stime,
+   * stima basata su esperienza storica,
+   * complessità parametrica (“se progetto harder → +30%”).
