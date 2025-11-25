@@ -59,11 +59,7 @@ Le ore effettive con margine sostituiscono le stime nella pianificazione.
 La pipeline aggiornata è:
 
 ```
-Input progetto →
-Applicazione del margine →
-Allocazione risorse →
-Verifica fattibilità →
-Output piano
+Input progetto → Applicazione del margine → Allocazione risorse → Verifica fattibilità → Output piano
 ```
 
 Nulla cambia nelle altre fasi.
