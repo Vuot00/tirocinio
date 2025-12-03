@@ -68,42 +68,42 @@ Segna le attività completate mettendo una `x` tra le parentesi quadre (es. `- [
 ## 🏗️ Fase 1: Strutture Dati (File: `modelli.py`)
 *Obiettivo: Creare le basi del sistema definendo gli oggetti e le regole matematiche.*
 
-- [ ] **Definizione classe `Risorsa`**
-  - [ ] Attributi: nome, skill, ore totali, ore impegnate
-  - [ ] Proprietà dinamica: `ore_residue`
-  - [ ] Metodo per assegnare ore
-- [ ] **Definizione classe `Progetto`**
-  - [ ] Attributi: nome, scadenza, budget risorse
-  - [ ] **Logica Margine di Sicurezza**: Calcolo automatico `ore_richieste` aumentate del margine %
+- [x] **Definizione classe `Risorsa`**
+  - [x] Attributi: nome, skill, ore totali, ore impegnate
+  - [x] Proprietà dinamica: `ore_residue`
+  - [x] Metodo per assegnare ore
+- [x] **Definizione classe `Progetto`**
+  - [x] Attributi: nome, scadenza, budget risorse
+  - [x] **Logica Margine di Sicurezza**: Calcolo automatico `ore_richieste` aumentate del margine %
 
 ---
 
 ## 🧠 Fase 2: Motore Logico (File: `motore.py`)
 *Obiettivo: Implementare l'algoritmo che prende le decisioni senza intervento umano.*
 
-- [ ] **Funzione `ordina_progetti`**
-  - [ ] Criterio: Data di scadenza crescente (dal più urgente al meno urgente)
-- [ ] **Funzione `assegna_risorse` (Algoritmo Greedy)**
-  - [ ] Ciclo sui progetti ordinati
-  - [ ] Filtro risorse per skill
-  - [ ] Ordinamento risorse per disponibilità residua (decrescente)
-  - [ ] Assegnazione ore fino a copertura o fine risorse
-  - [ ] Gestione stato "Non Fattibile" se le risorse mancano
+- [x] **Funzione `ordina_progetti`**
+  - [x] Criterio: Data di scadenza crescente (dal più urgente al meno urgente)
+- [x] **Funzione `assegna_risorse` (Algoritmo Greedy)**
+  - [x] Ciclo sui progetti ordinati
+  - [x] Filtro risorse per skill
+  - [x] Ordinamento risorse per disponibilità residua (decrescente)
+  - [x] Assegnazione ore fino a copertura o fine risorse
+  - [x] Gestione stato "Non Fattibile" se le risorse mancano
 
 ---
 
 ## 🚀 Fase 3: Esecuzione e Test (File: `main.py`)
 *Obiettivo: Mettere tutto insieme e verificare il funzionamento con dati simulati.*
 
-- [ ] **Setup Dati di Prova**
-  - [ ] Creazione lista Risorse simulate (es. Mario, Luca, Giulia)
-  - [ ] Creazione lista Progetti simulati con scadenze diverse
-- [ ] **Integrazione**
-  - [ ] Importazione dei moduli `modelli` e `motore`
-  - [ ] Esecuzione della pianificazione
-- [ ] **Reportistica**
-  - [ ] Stampa progetti pianificati con dettagli
-  - [ ] Stampa progetti scartati
-  - [ ] Stampa carico finale delle risorse
+- [x] **Setup Dati di Prova**
+  - [x] Creazione lista Risorse simulate (es. Mario, Luca, Giulia)
+  - [x] Creazione lista Progetti simulati con scadenze diverse
+- [x] **Integrazione**
+  - [x] Importazione dei moduli `modelli` e `motore`
+  - [x] Esecuzione della pianificazione
+- [x] **Reportistica**
+  - [x] Stampa progetti pianificati con dettagli
+  - [x] Stampa progetti scartati
+  - [x] Stampa carico finale delle risorse
       * Esecuzione script e verifica output.
       * Tuning dei parametri (margine, budget).
