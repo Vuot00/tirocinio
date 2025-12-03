@@ -4,7 +4,9 @@ from modelli import Risorsa, Progetto
 # ⚙️ CONFIGURAZIONE E COSTANTI
 # ==============================================================================
 TOLLERANZA_ERRORE_FLOAT = 0.5  # Tolleranza per arrotondamenti (ore)
-MIN_ORE_ASSEGNABILI = 0.1      # Minimo blocco di tempo assegnabile
+
+# TODO Da rivedere
+MIN_ORE_ASSEGNABILI = 0.1      # Minimo blocco di tempo assegnabile 
 
 def ordina_progetti(lista_progetti):
     """

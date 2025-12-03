@@ -38,7 +38,7 @@
                 {% else %}
                     <div class="error-box">
                         <strong>⛔ NON FATTIBILE</strong><br>
-                        Mancano ancora {{ p.ore_ancora_da_coprire }} ore da coprire.
+                        Mancano ancora {{ p.ore_ancora_da_coprire | round(1) }} ore da coprire.
                         Risorse insufficienti o buffer di sicurezza non rispettato.
                     </div>
                 {% endif %}
@@ -50,18 +50,32 @@
         <h2>Carico Risorse</h2>
         {% for r in risorse %}
             <div class="card-resource">
-                <h4>{{ r.nome }} <small>({{ r.skill }})</small></h4>
-                <div class="progress-bar-bg">
-                    {% if r.ore_totali_disponibili > 0 %}
-                        {% set perc = (r.ore_impegnate / r.ore_totali_disponibili * 100) | int %}
+            <h4>{{ r.nome }} <small>({{ r.skill }})</small></h4>
+            
+            <div class="progress-bar-bg">
+                {% if r.ore_totali_disponibili > 0 %}
+                    {% set netto = r.ore_totali_disponibili - r.ore_assenze %}
+                    {% if netto > 0 %}
+                        {% set perc = (r.ore_impegnate / netto * 100) | int %}
                     {% else %}
-                        {% set perc = 0 %}
-                    {% endif %}
-                    
-                    <div class="progress-bar-fill" style="width: {{ perc }}%;">{{ perc }}%</div>
+                        {% set perc = 100 %} {% endif %}
+                {% else %}
+                    {% set perc = 0 %}
+                {% endif %}
+                
+                <div class="progress-bar-fill" 
+                     style="width: {{ [perc, 100]|min }}%; background-color: {{ '#e74c3c' if perc > 100 else '#3498db' }}">
+                     {{ perc }}%
                 </div>
-                <p><small>Impegnate: {{ r.ore_impegnate }}h / Totali: {{ r.ore_totali_disponibili }}h</small></p>
             </div>
+            
+            <p style="font-size:0.9rem; margin-top:5px;">
+                Impegnate: <strong>{{ r.ore_impegnate | round(1) }}h</strong> 
+                su <strong style="color:#2c3e50">{{ r.ore_residue + r.ore_impegnate }}h effettive</strong>
+                <br>
+                <small style="color:#999;">(Contrattuali: {{ r.ore_totali_disponibili }}h - Assenze: {{ r.ore_assenze }}h)</small>
+            </p>
+        </div>
         {% endfor %}
     </div>
 
