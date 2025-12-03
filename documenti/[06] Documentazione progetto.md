@@ -129,6 +129,7 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
 ## 🔜 Fase 4: Futuri Miglioramenti (Backlog)
 *Idee per le prossime versioni del software.*
 
+- [ ] **Filtro Ordinamento**: Aggiungere un menù per la selezione di un filtro (vedere appunti)
 - [ ] **Sicurezza**: Aggiungere Login e gestione utenti.
 - [ ] **Export**: Scaricare il piano in Excel o PDF.
 - [ ] **Visualizzazione Avanzata**: Grafico di Gantt temporale.
