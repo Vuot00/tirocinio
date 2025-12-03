@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifica Risorsa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>✏️ Modifica Risorsa: {{ r.nome }}</h1>
+    <a href="/" class="btn-back">⬅ Torna alla Dashboard</a>
+</header>
+
+<div class="container" style="justify-content: center;">
+    <div class="card" style="width: 100%; max-width: 600px;">
+        
+        <form action="/aggiorna_risorsa/{{ r.id }}" method="POST">
+            <h3>Dati Generali</h3>
+            
+            <label>Nome e Cognome</label>
+            <input type="text" name="nome" value="{{ r.nome }}" required>
+            
+            <label>Ruolo (Skill)</label>
+            <select name="skill">
+                <option value="Developer" {% if r.skill == 'Developer' %}selected{% endif %}>Developer</option>
+                <option value="Tester" {% if r.skill == 'Tester' %}selected{% endif %}>Tester</option>
+                <option value="PM" {% if r.skill == 'PM' %}selected{% endif %}>Project Manager</option>
+            </select>
+            
+            <label>Ore Totali Disponibili</label>
+            <input type="number" name="ore" value="{{ r.ore_totali }}" required>
+            
+            <div class="row" style="margin-top: 20px;">
+                <button type="submit" class="btn-calcola">💾 Salva Dati Generali</button>
+            </div>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <h3>🏖️ Gestione Assenze Registrate</h3>
+        
+        {% if r.assenze %}
+            <table style="margin-top: 10px; font-size: 0.9rem;">
+                <thead>
+                    <tr>
+                        <th style="background:#f9f9f9">Dal</th>
+                        <th style="background:#f9f9f9">Al</th>
+                        <th style="background:#f9f9f9">Motivo</th>
+                        <th style="background:#f9f9f9; width:40px;">Canc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assenza in r.assenze %}
+                    <tr>
+                        <td>{{ assenza.data_inizio }}</td>
+                        <td>{{ assenza.data_fine }}</td>
+                        <td>{{ assenza.motivo }}</td>
+                        <td style="text-align: center;">
+                            <a href="/elimina_assenza/{{ assenza.id }}" 
+                               style="text-decoration: none; font-size: 1.2rem;"
+                               onclick="return confirm('Vuoi davvero cancellare questo periodo di assenza?')">
+                               🗑️
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="color: #666; font-style: italic;">Nessuna assenza registrata per questa risorsa.</p>
+        {% endif %}
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <div style="text-align: right;">
+            <a href="/elimina_risorsa/{{ r.id }}" style="color: red; font-size: 0.9rem;" onclick="return confirm('ATTENZIONE: Eliminando la risorsa perderai anche tutto lo storico delle sue assenze. Continuare?')">🗑️ Elimina Intera Risorsa</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

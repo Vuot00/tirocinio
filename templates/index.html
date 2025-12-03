@@ -30,9 +30,37 @@
             </form>
         </div>
 
+        <div class="card" style="border-left: 5px solid #f39c12;">
+            <h2>Registra Ferie/Assenza 🏖️</h2>
+            <form action="/aggiungi_assenza" method="POST">
+                <label>Chi sarà assente?</label>
+                <select name="risorsa_id" required>
+                    {% for r in risorse %}
+                    <option value="{{ r.id }}">{{ r.nome }} ({{ r.skill }})</option>
+                    {% endfor %}
+                </select>
+                
+                <div class="row">
+                    <div>
+                        <label>Dal</label>
+                        <input type="date" name="inizio" required>
+                    </div>
+                    <div>
+                        <label>Al</label>
+                        <input type="date" name="fine" required>
+                    </div>
+                </div>
+
+                <input type="text" name="motivo" placeholder="Motivo (es. Ferie Estive)" required>
+                
+                <button type="submit" style="background-color: #f39c12;">Registra Assenza</button>
+            </form>
+        </div>
+
         <div class="card">
             <h2>Aggiungi Progetto</h2>
-            <form action="/aggiungi_progetto" method="POST">
+            
+            <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
                 <input type="text" name="nome" placeholder="Nome Progetto" required>
                 
                 <div class="row">
@@ -53,18 +81,26 @@
                 </div>
 
                 <h4>Composizione Team Richiesta:</h4>
+                
                 <div class="row">
-                    <label>Developers:</label>
-                    <input type="number" name="qty_dev" value="0" min="0">
+                    <label style="flex:1">Developer (Qty / %):</label>
+                    <input type="number" name="qty_dev" value="0" min="0" style="flex:1" placeholder="N°">
+                    <input type="number" name="pct_dev" class="perc-input" value="0" min="0" max="100" style="flex:1" placeholder="%">
                 </div>
+                
                 <div class="row">
-                    <label>Testers:</label>
-                    <input type="number" name="qty_tester" value="0" min="0">
+                    <label style="flex:1">Tester (Qty / %):</label>
+                    <input type="number" name="qty_tester" value="0" min="0" style="flex:1" placeholder="N°">
+                    <input type="number" name="pct_tester" class="perc-input" value="0" min="0" max="100" style="flex:1" placeholder="%">
                 </div>
+                
                 <div class="row">
-                    <label>PM:</label>
-                    <input type="number" name="qty_pm" value="0" min="0">
+                    <label style="flex:1">PM (Qty / %):</label>
+                    <input type="number" name="qty_pm" value="0" min="0" style="flex:1" placeholder="N°">
+                    <input type="number" name="pct_pm" class="perc-input" value="0" min="0" max="100" style="flex:1" placeholder="%">
                 </div>
+                
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">* La somma delle percentuali deve fare 100%.</p>
 
                 <button type="submit" class="btn-progetto" style="margin-top:15px">Salva Progetto</button>
             </form>
@@ -77,14 +113,26 @@
         <h3>Risorse Disponibili</h3>
         <table>
             <thead>
-                <tr><th>Nome</th><th>Skill</th><th>Ore Tot.</th></tr>
+                <tr>
+                    <th>Nome</th>
+                    <th>Skill</th>
+                    <th>Ore Tot.</th>
+                    <th>Azioni</th> </tr>
             </thead>
             <tbody>
                 {% for r in risorse %}
                 <tr>
                     <td>{{ r.nome }}</td>
                     <td><span class="badge">{{ r.skill }}</span></td>
-                    <td>{{ r.ore_totali }}h</td>
+                    <td>
+                        {{ r.ore_totali }}h
+                        {% if r.assenze %}
+                            <br><small style="color:#e67e22; font-weight:bold;">(-{{ r.assenze|length }} periodi assenza)</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/modifica_risorsa/{{ r.id }}" style="text-decoration: none;">✏️</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -120,6 +168,23 @@
     </div>
 
 </div>
+
+<script>
+    function validaPercentuali() {
+        var p1 = parseInt(document.getElementsByName('pct_dev')[0].value) || 0;
+        var p2 = parseInt(document.getElementsByName('pct_tester')[0].value) || 0;
+        var p3 = parseInt(document.getElementsByName('pct_pm')[0].value) || 0;
+
+        var totale = p1 + p2 + p3;
+
+        if (totale !== 100) {
+            alert("⚠️ ATTENZIONE!\n\nLa somma delle percentuali deve essere esattamente 100%.\nSomma attuale: " + totale + "%");
+            return false;
+        }
+        
+        return true;
+    }
+</script>
 
 </body>
 </html>

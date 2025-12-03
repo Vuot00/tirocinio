@@ -15,7 +15,7 @@
 <div class="container" style="justify-content: center;">
     <div class="card" style="width: 100%; max-width: 600px;">
         
-        <form action="/aggiorna_progetto/{{ p.id }}" method="POST">
+        <form action="/aggiorna_progetto/{{ p.id }}" method="POST" onsubmit="return validaPercentuali()">
             
             <label>Nome Progetto</label>
             <input type="text" name="nome" value="{{ p.nome }}" required>
@@ -42,17 +42,24 @@
             <h4>Composizione Team Richiesta:</h4>
             
             <div class="row">
-                <label>Developers:</label>
-                <input type="number" name="qty_dev" value="{{ reqs['Developer'] }}" min="0">
+                <label style="flex:1">Developer (Qty / %):</label>
+                <input type="number" name="qty_dev" value="{{ reqs['Developer']['qty'] }}" min="0" style="flex:1" placeholder="N°">
+                <input type="number" name="pct_dev" value="{{ reqs['Developer']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
             </div>
+
             <div class="row">
-                <label>Testers:</label>
-                <input type="number" name="qty_tester" value="{{ reqs['Tester'] }}" min="0">
+                <label style="flex:1">Tester (Qty / %):</label>
+                <input type="number" name="qty_tester" value="{{ reqs['Tester']['qty'] }}" min="0" style="flex:1" placeholder="N°">
+                <input type="number" name="pct_tester" value="{{ reqs['Tester']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
             </div>
+
             <div class="row">
-                <label>PM:</label>
-                <input type="number" name="qty_pm" value="{{ reqs['PM'] }}" min="0">
+                <label style="flex:1">PM (Qty / %):</label>
+                <input type="number" name="qty_pm" value="{{ reqs['PM']['qty'] }}" min="0" style="flex:1" placeholder="N°">
+                <input type="number" name="pct_pm" value="{{ reqs['PM']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
             </div>
+
+            <p style="font-size:0.8rem; color:#666; margin-top:5px;">* La somma delle percentuali deve fare 100%.</p>
 
             <div class="row" style="margin-top: 20px;">
                 <button type="submit" class="btn-calcola">💾 Salva Modifiche</button>
@@ -66,6 +73,22 @@
 
     </div>
 </div>
+
+<script>
+    function validaPercentuali() {
+        var p1 = parseInt(document.getElementsByName('pct_dev')[0].value) || 0;
+        var p2 = parseInt(document.getElementsByName('pct_tester')[0].value) || 0;
+        var p3 = parseInt(document.getElementsByName('pct_pm')[0].value) || 0;
+
+        var totale = p1 + p2 + p3;
+
+        if (totale !== 100) {
+            alert("⚠️ ATTENZIONE!\n\nLa somma delle percentuali deve essere esattamente 100%.\nSomma attuale: " + totale + "%");
+            return false;
+        }
+        return true;
+    }
+</script>
 
 </body>
 </html>

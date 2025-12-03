@@ -1,87 +1,116 @@
 from modelli import Risorsa, Progetto
 
+# ==============================================================================
+# ⚙️ CONFIGURAZIONE E COSTANTI
+# ==============================================================================
+TOLLERANZA_ERRORE_FLOAT = 0.5  # Tolleranza per arrotondamenti (ore)
+MIN_ORE_ASSEGNABILI = 0.1      # Minimo blocco di tempo assegnabile
+
 def ordina_progetti(lista_progetti):
+    """
+    Ordina i progetti per Priorità (1=Alta) e poi per Data di Consegna.
+    """
     return sorted(lista_progetti, key=lambda p: (p.priorita, p.data_consegna))
 
+def calcola_fattore_pianificazione(margine_percentuale):
+    """
+    Restituisce il moltiplicatore per il Buffer Interno.
+    Es. Margine 10% -> Fattore 0.9 (Pianifichiamo solo il 90% delle ore disponibili)
+    """
+    return 1 - (margine_percentuale / 100)
+
+# ==============================================================================
+# 🧠 ALGORITMO DI ASSEGNAZIONE
+# ==============================================================================
 def assegna_risorse(progetti, risorse):
     
     progetti_ordinati = ordina_progetti(progetti)
-    print(f"--- Pianificazione Bilanciata per {len(progetti)} progetti ---")
+    print(f"--- 🚀 Avvio Pianificazione Deterministica (Load Balancing attivo) ---")
 
     for progetto in progetti_ordinati:
-        print(f"\n🔹 [P{progetto.priorita}] {progetto.nome} (Scad: {progetto.data_consegna})")
+        print(f"\n🔹 [P{progetto.priorita}] {progetto.nome} (Totale Richiesto: {progetto.ore_totali_richieste}h)")
         
-        # Fattore 0.9 se margine è 10% (buffer interno)
-        fattore_pianificazione = 1 - (progetto.margine_percentuale / 100)
-        
+        # 1. Calcolo Buffer Interno per questo progetto
+        fattore_pianificazione = calcola_fattore_pianificazione(progetto.margine_percentuale)
         progetto_completamente_coperto = True
+        
+        # 2. Iterazione sui Ruoli (Skills)
+        for skill_richiesta, skill_data in progetto.requisiti.items():
+            
+            # Estrazione dati requisito
+            qty_necessaria = skill_data['qty']
+            percentuale_carico = skill_data['perc']
+            
+            # Calcolo ore dedicate a questo specifico ruolo
+            ore_target_ruolo = progetto.ore_totali_richieste * (percentuale_carico / 100)
+            ore_ancora_da_coprire = ore_target_ruolo
+            
+            print(f"   🔎 Ruolo {skill_richiesta}: {percentuale_carico}% del tot -> Servono {ore_target_ruolo}h (Min {qty_necessaria} persone)")
 
-        for skill_richiesta, quantita_necessaria in progetto.requisiti.items():
-            
-            persone_trovate = 0
-            
+            # 3. Selezione Candidati
+            # Filtriamo chi ha la skill e ordiniamo per chi è più scarico (maggior residuo)
             candidati = [r for r in risorse if r.skill == skill_richiesta]
             candidati.sort(key=lambda r: r.ore_residue, reverse=True)
 
-            print(f"   🔎 Cerco {quantita_necessaria} x {skill_richiesta}...")
+            persone_trovate = 0
 
+            # 4. Assegnazione (Ciclo Greedy con Load Balancing)
             for risorsa in candidati:
-                # Se abbiamo trovato tutti per questa skill, stop.
-                if persone_trovate >= quantita_necessaria: break
+                # Condizioni di uscita
+                if ore_ancora_da_coprire <= 0: break
                 
-                # Se le ore sono finite, stop.
-                if progetto.ore_ancora_da_coprire <= 0: break
+                # --- LOGICA LOAD BALANCING ---
+                # Quante persone mancano per raggiungere il quorum?
+                persone_mancanti = qty_necessaria - persone_trovate
+                if persone_mancanti < 1: persone_mancanti = 1 
+                
+                # Calcoliamo il fabbisogno "Scontato" (Buffer Interno)
+                # È la quantità di spazio che vogliamo occupare sul calendario della risorsa
+                fabbisogno_scontato_rimanente = ore_ancora_da_coprire * fattore_pianificazione
+                
+                # Dividiamo il carico rimanente per le persone che mancano
+                # Questo evita che il primo prenda tutto il lavoro
+                quota_massima_per_persona = fabbisogno_scontato_rimanente / persone_mancanti
+                
+                # Verifica disponibilità risorsa
+                if risorsa.ore_residue <= 0: continue
 
-                # --- NOVITÀ: CALCOLO DISTRIBUITO ---
-                # Quante persone mancano ancora da trovare (inclusa questa)?
-                persone_mancanti = quantita_necessaria - persone_trovate
-                
-                # Calcoliamo il fabbisogno totale SCONTATO
-                fabbisogno_reale = progetto.ore_ancora_da_coprire
-                fabbisogno_scontato_totale = fabbisogno_reale * fattore_pianificazione
-                
-                # Dividiamo la torta: Ognuno prende una fetta uguale in base a quanti mancano
-                # Es. 40 ore, 2 persone -> Tetto max 20 ore a testa.
-                quota_massima_per_persona = fabbisogno_scontato_totale / persone_mancanti
-                
-                # Verifica: La risorsa ha spazio almeno per un po' di lavoro?
-                # Nota: qui siamo più flessibili, se ha spazio lo usiamo fino alla quota.
-                if risorsa.ore_residue <= 0:
-                    continue 
-
-                # ASSEGNAZIONE
-                # Prendiamo il MINIMO tra:
-                # 1. La quota che spetta a questa persona (per non rubare lavoro agli altri)
-                # 2. Le ore libere della risorsa
+                # Decidiamo quanto assegnare:
+                # Non più della quota calcolata E non più di quanto la risorsa ha libero
                 ore_da_impegnare = min(quota_massima_per_persona, risorsa.ore_residue)
-                
-                # Arrotondiamo per pulizia (evita 19.9999999)
                 ore_da_impegnare = round(ore_da_impegnare, 2)
                 
-                if ore_da_impegnare <= 0: continue
+                if ore_da_impegnare <= MIN_ORE_ASSEGNABILI: continue
 
-                # Calcoliamo quanto "valgono" queste ore sul progetto reale
+                # --- APPLICAZIONE ---
+                # 1. Scaliamo le ore dal calendario della risorsa (ore "scontate")
+                risorsa.assegna_ore(ore_da_impegnare)
+                
+                # 2. Calcoliamo quanto progresso REALE abbiamo fatto sul progetto
+                # (Dobbiamo "rigonfiare" le ore per tornare al valore di progetto)
                 if fattore_pianificazione > 0:
                     progresso_reale = ore_da_impegnare / fattore_pianificazione
                 else:
                     progresso_reale = ore_da_impegnare
-                
-                # Eseguiamo
-                risorsa.assegna_ore(ore_da_impegnare)
-                progetto.ore_ancora_da_coprire -= progresso_reale
+
+                ore_ancora_da_coprire -= progresso_reale
                 progetto.risorse_assegnate.append(risorsa)
                 persone_trovate += 1
                 
-                print(f"      ✅ Preso {risorsa.nome}: {ore_da_impegnare}h (Quota max era {round(quota_massima_per_persona,1)}h)")
+                print(f"      ✅ {risorsa.nome}: Impegna {ore_da_impegnare}h (Copre {round(progresso_reale, 1)}h reali)")
 
-            if persone_trovate < quantita_necessaria:
-                print(f"      ⚠️  Mancano risorse per {skill_richiesta} (Trovati {persone_trovate}/{quantita_necessaria})")
+            # 5. Verifica Esito per questo Ruolo
+            if ore_ancora_da_coprire > TOLLERANZA_ERRORE_FLOAT:
+                print(f"      ⚠️  Mancano {round(ore_ancora_da_coprire, 1)}h per il ruolo {skill_richiesta}")
+                progetto_completamente_coperto = False
+            elif persone_trovate < qty_necessaria:
+                print(f"      ⚠️  Team sottodimensionato per {skill_richiesta} (Trovati {persone_trovate}/{qty_necessaria})")
                 progetto_completamente_coperto = False
         
-        # Tolleranza minima per i float
-        if progetto.ore_ancora_da_coprire > 0.1 or not progetto_completamente_coperto:
+        # 6. Verifica Finale Progetto
+        if not progetto_completamente_coperto:
             progetto.fattibile = False
-            print(f"   ⛔ NON FATTIBILE. Ore mancanti: {round(progetto.ore_ancora_da_coprire, 1)}")
+            print("   ⛔ NON FATTIBILE: Risorse insufficienti o requisiti non soddisfatti.")
         else:
             progetto.fattibile = True
-            print("   ✨ Progetto coperto!")
+            print("   ✨ Progetto Completamente Coperto!")
