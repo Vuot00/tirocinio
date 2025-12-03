@@ -1,0 +1,150 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1, h2, h3 { margin-top: 0; }
+
+.container {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.col-input { flex: 1; }
+.col-data { flex: 2; }
+
+/* Cards e Form */
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Importante per il padding */
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.row label { font-size: 0.9rem; font-weight: bold;}
+.row input { width: 70%; }
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+button:hover { background-color: #2980b9; }
+
+.btn-calcola {
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.btn-back { color: white; text-decoration: none; }
+
+/* Tabelle */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+th { background-color: #ecf0f1; }
+.badge {
+    background-color: #e0e0e0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+/* Pagina Risultati */
+.container-result {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.card-result {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 6px solid #ccc;
+}
+.card-result.success { border-left-color: #27ae60; }
+.card-result.error { border-left-color: #c0392b; background-color: #fff5f5; }
+
+.header-res {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.assigned-box { color: #27ae60; }
+.error-box { color: #c0392b; font-weight: bold; }
+
+/* Barra Carico Risorse */
+.card-resource {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+}
+.progress-bar-bg {
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    height: 20px;
+    width: 100%;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    background-color: #3498db;
+    height: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: white;
+    line-height: 20px;
+}

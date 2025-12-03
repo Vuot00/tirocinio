@@ -1,14 +1,11 @@
-from datetime import datetime
+from datetime import datetime, date
 
 class Risorsa:
-    """
-    Rappresenta una persona o un team.
-    """
     def __init__(self, nome, skill, ore_totali_disponibili):
         self.nome = nome
-        self.skill = skill  
+        self.skill = skill
         self.ore_totali_disponibili = ore_totali_disponibili
-        self.ore_impegnate = 0 
+        self.ore_impegnate = 0
 
     @property
     def ore_residue(self):
@@ -22,44 +19,33 @@ class Risorsa:
 
 
 class Progetto:
-    """
-    Rappresenta un progetto da pianificare.
-    """
-    def __init__(self, nome, data_consegna, ore_stimate, margine_percentuale, skill_richiesta, max_risorse):
+    # NOTA: Qui abbiamo tolto 'skill_richiesta' e 'max_risorse' 
+    # e messo 'requisiti'
+    def __init__(self, nome, priorita, data_consegna, ore_stimate, margine_percentuale, requisiti):
         self.nome = nome
+        self.priorita = priorita
         
-        try:
-            self.data_consegna = datetime.strptime(data_consegna, "%Y-%m-%d")
-        except ValueError:
-            self.data_consegna = datetime.max 
+        # Gestione Data (Stringa o Oggetto)
+        if isinstance(data_consegna, str):
+            try:
+                self.data_consegna = datetime.strptime(data_consegna, "%Y-%m-%d")
+            except ValueError:
+                self.data_consegna = datetime.max
+        elif isinstance(data_consegna, (date, datetime)):
+            self.data_consegna = data_consegna
+        else:
+            self.data_consegna = datetime.max
 
-        self.skill_richiesta = skill_richiesta
-        self.max_risorse = max_risorse
+        # NUOVO: Requisiti è un dizionario {'Skill': quantita}
+        # Es: {'Developer': 2, 'Tester': 1}
+        self.requisiti = requisiti
         
-        # --- CORREZIONE: MANTENIAMO I DATI PULITI ---
-        # Non gonfiamo più le ore qui.
-        self.ore_totali_richieste = ore_stimate 
-        
-        # Salviamo il margine. Lo userà il MOTORE per calcolare la velocità giornaliera.
-        # Es. Se margine è 20%, nel motore useremo solo l'80% della giornata lavorativa.
+        self.ore_totali_richieste = ore_stimate
         self.margine_percentuale = margine_percentuale
         
         self.ore_ancora_da_coprire = self.ore_totali_richieste
-        self.risorse_assegnate = [] 
-        self.fattibile = True 
-
+        self.risorse_assegnate = []
+        self.fattibile = True
+        
     def __repr__(self):
-        # Stampa pulita: mostra le ore reali del preventivo
-        return (f"Progetto: {self.nome} | Scadenza: {self.data_consegna.date()} | "
-                f"Budget Ore: {self.ore_totali_richieste} (Margine Sicurezza: {self.margine_percentuale}%)")
-
-if __name__ == "__main__":
-    print("--- TEST VERSIONE CORRETTA (Buffer Temporale) ---")
-    p = Progetto("Test App", "2025-10-10", 120, 5, "Dev", 1)
-    print(p)
-    
-    ore_progetto = input("di quante ore necessita il progetto?")
-    if p.ore_totali_richieste == ore_progetto: #da modificare se si cambiano nel costruttore
-        print("✅ Ottimo. Il progetto richiede", p.ore_totali_richieste, "ore, con un margine del", p.margine_percentuale, "%")
-    else:
-        print("❌ Errore: Le ore sono state modificate.")
+        return f"Progetto: {self.nome}"
