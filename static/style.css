@@ -6,52 +6,47 @@ body {
     color: #333;
 }
 
-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-h1, h2, h3 { margin-top: 0; }
-
 .container {
-    display: flex;
     padding: 2rem;
-    gap: 2rem;
 }
 
-.col-input { flex: 1; }
-.col-data { flex: 2; }
+/* Menu Navigazione */
+.nav-link {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-right: 20px;
+    transition: color 0.3s;
+}
 
-/* Cards e Form */
+.nav-link:hover {
+    color: #3498db;
+}
+
+/* Cards e Tabelle */
 .card {
     background: white;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
 }
 
-input, select {
+input,
+select {
     width: 100%;
     padding: 10px;
     margin: 8px 0 15px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box; /* Importante per il padding */
+    box-sizing: border-box;
 }
 
 .row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: 10px;
 }
-.row label { font-size: 0.9rem; font-weight: bold;}
-.row input { width: 70%; }
 
 button {
     width: 100%;
@@ -63,7 +58,10 @@ button {
     cursor: pointer;
     font-size: 1rem;
 }
-button:hover { background-color: #2980b9; }
+
+button:hover {
+    background-color: #2980b9;
+}
 
 .btn-calcola {
     background-color: #27ae60;
@@ -73,9 +71,12 @@ button:hover { background-color: #2980b9; }
     border-radius: 4px;
     font-weight: bold;
 }
-.btn-back { color: white; text-decoration: none; }
 
-/* Tabelle */
+.btn-back {
+    color: white;
+    text-decoration: none;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -84,20 +85,26 @@ table {
     overflow: hidden;
     margin-bottom: 2rem;
 }
-th, td {
+
+th,
+td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
-th { background-color: #ecf0f1; }
+
+th {
+    background-color: #ecf0f1;
+}
+
 .badge {
-    background-color: #e0e0e0;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 0.8rem;
+    background: #e0e0e0;
 }
 
-/* Pagina Risultati */
+/* Risultati */
 .container-result {
     padding: 2rem;
     display: grid;
@@ -112,27 +119,16 @@ th { background-color: #ecf0f1; }
     margin-bottom: 1rem;
     border-left: 6px solid #ccc;
 }
-.card-result.success { border-left-color: #27ae60; }
-.card-result.error { border-left-color: #c0392b; background-color: #fff5f5; }
 
-.header-res {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+.card-result.success {
+    border-left-color: #27ae60;
 }
 
-.assigned-box { color: #27ae60; }
-.error-box { color: #c0392b; font-weight: bold; }
-
-/* Barra Carico Risorse */
-.card-resource {
-    background: white;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 8px;
+.card-result.error {
+    border-left-color: #c0392b;
+    background-color: #fff5f5;
 }
+
 .progress-bar-bg {
     background-color: #ecf0f1;
     border-radius: 10px;
@@ -140,6 +136,7 @@ th { background-color: #ecf0f1; }
     width: 100%;
     overflow: hidden;
 }
+
 .progress-bar-fill {
     background-color: #3498db;
     height: 100%;

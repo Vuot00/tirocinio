@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pianificatore Risorse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+</head>
+
+<body>
+
+    <nav
+        style="background-color: #2c3e50; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+        <h2 style="color: white; margin: 0 30px 0 10px;">🚀 Pianificatore</h2>
+
+        <a href="/risorse" class="nav-link">👥 Risorse</a>
+        <a href="/progetti" class="nav-link">📁 Progetti</a>
+        <a href="/calendario" class="nav-link">📅 Calendario</a>
+
+    </nav>
+
+    <div class="container" style="margin-top: 30px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 5px; 
+                      background-color: {{ '#f8d7da' if category == 'error' else '#d4edda' }}; 
+                      color: {{ '#721c24' if category == 'error' else '#155724' }}; 
+                      border: 1px solid {{ '#f5c6cb' if category == 'error' else '#c3e6cb' }};">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+
+</html>

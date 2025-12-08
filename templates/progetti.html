@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Stili Accordion */
+    details { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; background: white; overflow: hidden; }
+    summary { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    details[open] summary { border-bottom: 1px solid #eee; background-color: #f9f9f9; }
+    .status-indicator { height: 100%; width: 5px; position: absolute; left: 0; top: 0; }
+    .details-content { padding: 20px; background: #fafafa; }
+    .res-bar-bg { background: #e0e0e0; height: 8px; border-radius: 4px; width: 100%; margin-top: 5px; }
+    .res-bar-fill { height: 100%; border-radius: 4px; background: #3498db; }
+</style>
+
+<div style="display: flex; gap: 30px;">
+    
+    <div class="col-input" style="flex: 1; max-width: 400px;">
+        <div class="card">
+            <h2>Nuovo Progetto</h2>
+            <div style="background: #e8f6f3; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                <label>💡 Usa Template:</label>
+                <select id="templateSelect" onchange="applicaTemplate()" style="width:100%">
+                    <option value="">-- Seleziona --</option>
+                    {% for nome, dati in best_practices.items() %}
+                        <option value='{{ dati|tojson }}'>{{ nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
+                <input type="text" name="nome" placeholder="Nome Progetto" required>
+                <div class="row">
+                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="5" min="1" max="10"></div>
+                    <div style="flex:1"><label>Margine %</label> <input type="number" name="margine" value="15"></div>
+                </div>
+                <div class="row">
+                    <div style="flex:1"><label>Inizio</label> <input type="date" name="data_inizio" required min="{{ today }}"></div>
+                    <div style="flex:1"><label>Fine</label> <input type="date" name="data" required min="{{ today }}"></div>
+                </div>
+                <input type="number" name="ore" placeholder="Ore Totali" required>
+
+                <h4>Ruoli (N° / %)</h4>
+                <div class="row">
+                    <label style="flex:1">Dev:</label>
+                    <input type="number" name="qty_dev" value="0" min="0" style="flex:1">
+                    <input type="number" name="pct_dev" id="pct_dev" value="0" style="flex:1" placeholder="%">
+                </div>
+                <div class="row">
+                    <label style="flex:1">Test:</label>
+                    <input type="number" name="qty_tester" value="0" min="0" style="flex:1">
+                    <input type="number" name="pct_tester" id="pct_tester" value="0" style="flex:1" placeholder="%">
+                </div>
+                <div class="row">
+                    <label style="flex:1">PM:</label>
+                    <input type="number" name="qty_pm" value="0" min="0" style="flex:1">
+                    <input type="number" name="pct_pm" id="pct_pm" value="0" style="flex:1" placeholder="%">
+                </div>
+
+                <button type="submit" class="btn-progetto" style="margin-top:15px">Crea Progetto</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-data" style="flex: 2;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2>Dashboard Progetti</h2>
+            <form action="/progetti" method="GET">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="recenti">🆕 Recenti</option>
+                    <option value="priorita" {% if current_sort == 'priorita' %}selected{% endif %}>🔥 Priorità</option>
+                    <option value="scadenza" {% if current_sort == 'scadenza' %}selected{% endif %}>📅 Scadenza</option>
+                </select>
+            </form>
+        </div>
+
+        {% for p in progetti %}
+            {% set border_color = '#7f8c8d' %}
+            {% if p.stato_db == 'In svolgimento' %}
+                {% set border_color = '#27ae60' if p.fattibile else '#c0392b' %}
+            {% elif p.stato_db == 'Pianificato' %}
+                {% set border_color = '#9b59b6' if p.fattibile else '#c0392b' %}
+            {% elif p.stato_db == 'Sospeso' %}
+                {% set border_color = '#f39c12' %}
+            {% endif %}
+
+            <details style="position: relative;">
+                <div class="status-indicator" style="background-color: {{ border_color }};"></div>
+                
+                <summary>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <strong style="font-size: 1.1rem;">{{ p.nome }}</strong>
+                            
+                            {% if p.stato_db == 'In svolgimento' %}
+                                {% if p.fattibile %}
+                                    <span class="badge" style="background:#27ae60; color:white;">IN CORSO</span>
+                                {% else %}
+                                    <span class="badge" style="background:#c0392b; color:white;">BLOCCATO</span>
+                                {% endif %}
+                            
+                            {% elif p.stato_db == 'Pianificato' %}
+                                <span class="badge" style="background:#9b59b6; color:white;">PIANIFICATO</span>
+                            {% elif p.stato_db == 'Sospeso' %}
+                                <span class="badge" style="background:#f39c12; color:white;">SOSPESO</span>
+                            {% else %}
+                                <span class="badge" style="background:#7f8c8d; color:white;">CONCLUSO</span>
+                            {% endif %}
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: #666;">
+                            <span style="background: #eee; padding: 2px 6px; border-radius: 4px;">P{{ p.priorita }}</span>
+                            {{ p.data_inizio.strftime('%d/%m') }} ➝ {{ p.data_consegna.strftime('%d/%m/%Y') }}
+                            
+                            {% if p.stato_db in ['In svolgimento', 'Pianificato'] %}
+                                {% if p.fattibile %}
+                                    <span style="color: #27ae60; font-weight: bold; margin-left: 10px;">✅ FATTIBILE</span>
+                                {% else %}
+                                    <span style="color: #c0392b; font-weight: bold; margin-left: 10px;">⛔ CARENZA RISORSE</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <span style="font-size: 1.2rem;">🔽</span>
+                </summary>
+
+                <div class="details-content">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <strong>Totale Ore:</strong> {{ p.ore_totali_richieste }}h (Margine: {{ p.margine_percentuale }}%)
+                        </div>
+                        <div>
+                            <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️ Modifica</a>
+                            
+                            {% if p.stato_db != 'Sospeso' %}
+                                <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️ Sospendi</a>
+                            {% else %}
+                                <a href="/cambia_stato/{{ p.id }}/In svolgimento" style="text-decoration:none; color:#27ae60;">▶️ Riattiva</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if p.assegnazioni_dettagliate %}
+                        {% for assegnazione in p.assegnazioni_dettagliate %}
+                            <div class="resource-row">
+                                <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                                    <span><strong>{{ assegnazione.nome_risorsa }}</strong> <span style="color:#666;">({{ assegnazione.skill }})</span></span>
+                                    <span>{{ assegnazione.ore_su_questo_progetto }}h</span>
+                                </div>
+                                {% set perc = (assegnazione.ore_su_questo_progetto / assegnazione.ore_nette_risorsa * 100) | int %}
+                                <div class="res-bar-bg"><div class="res-bar-fill" style="width: {{ perc }}%;"></div></div>
+                            </div>
+                        {% endfor %}
+                    
+                    {% elif p.stato_db in ['In svolgimento', 'Pianificato'] and not p.fattibile %}
+                        <div style="color: #c0392b; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #c0392b;">
+                            ⚠️ PROGETTO FERMO: Risorse insufficienti.
+                            <br><small style="font-weight: normal; color: #555;">Nonostante il periodo sia attivo, non ci sono risorse disponibili per avviare i lavori.</small>
+                        </div>
+                    {% else %}
+                        <p style="color: #7f8c8d; font-style: italic;">Il progetto è sospeso o concluso, le risorse sono state liberate.</p>
+                    {% endif %}
+                </div>
+            </details>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function applicaTemplate() {
+    var val = document.getElementById('templateSelect').value;
+    if(!val) return;
+    var data = JSON.parse(val);
+    document.getElementById('pct_dev').value = data['Developer'] || 0;
+    document.getElementById('pct_tester').value = data['Tester'] || 0;
+    document.getElementById('pct_pm').value = data['PM'] || 0;
+}
+
+function validaPercentuali() {
+    var p1 = parseInt(document.getElementById('pct_dev').value) || 0;
+    var p2 = parseInt(document.getElementById('pct_tester').value) || 0;
+    var p3 = parseInt(document.getElementById('pct_pm').value) || 0;
+    if ((p1 + p2 + p3) !== 100) {
+        alert("La somma delle percentuali deve essere 100%"); return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}

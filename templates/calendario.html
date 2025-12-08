@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- LAYOUT FULL SCREEN --- */
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; 
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 15px !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .card-calendar {
+        flex: 1;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
+    }
+
+    #calendar {
+        flex-grow: 1;
+        height: 100%;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 0.85rem;
+    }
+
+    /* --- STILE HEADER E BOTTONI --- */
+    
+    /* Forza l'allineamento orizzontale della barra strumenti */
+    .fc-header-toolbar {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 15px !important;
+        height: auto !important;
+    }
+
+    /* Questo raggruppa i bottoni sulla destra o sinistra */
+    .fc-toolbar-chunk {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px; /* Spazio tra i bottoni */
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.3rem !important;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    /* Stile Bottoni "Ghost" Minimal */
+    .fc-button {
+        background-color: white !important;
+        border: 1px solid #ddd !important;
+        color: #555 !important;
+        box-shadow: none !important;
+        padding: 5px 12px !important;
+        font-size: 0.9em !important;
+        text-transform: capitalize;
+        border-radius: 4px !important;
+        transition: all 0.2s ease;
+        display: inline-flex !important; /* Forza in linea */
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .fc-button:hover {
+        background-color: #f4f6f7 !important;
+        color: #2c3e50 !important;
+        border-color: #bbb !important;
+    }
+    
+    .fc-button-active {
+        background-color: #ecf0f1 !important;
+        color: #2c3e50 !important;
+        border-color: #bdc3c7 !important;
+        font-weight: bold;
+    }
+    
+    /* Icone frecce più pulite */
+    .fc-icon {
+        font-size: 1em !important;
+        line-height: 1 !important;
+    }
+
+    /* --- CELLE E EVENTI --- */
+    .fc-scrollgrid { border: none !important; }
+    .fc-theme-standard td, .fc-theme-standard th { border-color: #f0f0f0; }
+    .fc-col-header-cell { padding: 5px 0; background: #fafafa; }
+    
+    .fc-event {
+        border: none;
+        border-radius: 3px;
+        padding: 2px 5px;
+        margin-top: 2px;
+        font-size: 0.8em;
+        font-weight: 500;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* Nasconde scrollbar interne */
+    .fc-scroller { overflow-y: hidden !important; overflow-x: hidden !important; }
+</style>
+
+<div class="card-calendar">
+    <div id='calendar'></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'it',
+      height: '100%',
+      expandRows: true, 
+      
+      // --- CONFIGURAZIONE HEADER TOOLBAR ---
+      headerToolbar: {
+        left: 'title', // Titolo a sinistra
+        center: '',    // Nulla al centro
+        // "today" spazio "prev,next" (la virgola li unisce, lo spazio li separa)
+        right: 'today prev,next' 
+      },
+      
+      buttonText: {
+        today: 'Oggi' // Traduzione manuale pulita
+      },
+      
+      navLinks: false,
+      dayMaxEvents: true,
+      fixedWeekCount: false,
+
+      events: '/api/eventi_calendario',
+
+      eventDidMount: function(info) {
+        var endStr = "";
+        if(info.event.end) {
+            var realEnd = new Date(info.event.end);
+            realEnd.setDate(realEnd.getDate() - 1);
+            endStr = " - " + realEnd.toLocaleDateString();
+        }
+        var tooltip = info.event.title + "\n(" + info.event.start.toLocaleDateString() + endStr + ")";
+        info.el.setAttribute('title', tooltip);
+      },
+
+      eventClick: function(info) {
+        if (info.event.url) {
+          window.location.href = info.event.url;
+          info.jsEvent.preventDefault();
+        }
+      }
+    });
+    
+    calendar.render();
+    
+    window.addEventListener('resize', function() {
+        calendar.updateSize();
+    });
+  });
+</script>
+{% endblock %}

@@ -1,38 +1,37 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Modifica Progetto</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<header>
-    <h1>✏️ Modifica Progetto: {{ p.nome }}</h1>
-    <a href="/" class="btn-back">⬅ Annulla</a>
-</header>
-
-<div class="container" style="justify-content: center;">
+{% block content %}
+<div class="container" style="justify-content: center; display:flex;">
     <div class="card" style="width: 100%; max-width: 600px;">
-        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 style="margin:0;">✏️ Modifica: {{ p.nome }}</h1>
+            <a href="/progetti" class="btn-back" style="background:#95a5a6; padding:5px 10px; border-radius:4px;">⬅
+                Torna</a>
+        </div>
+
         <form action="/aggiorna_progetto/{{ p.id }}" method="POST" onsubmit="return validaPercentuali()">
-            
             <label>Nome Progetto</label>
             <input type="text" name="nome" value="{{ p.nome }}" required>
-            
+
             <div class="row">
                 <label>Priorità</label>
                 <input type="number" name="priorita" value="{{ p.priorita }}" min="1" max="10">
             </div>
-            
+
             <div class="row">
-                <label>Consegna</label>
-                <input type="date" name="data" value="{{ p.data_consegna }}" required>
+                <div style="flex:1">
+                    <label>Inizio Lavori</label>
+                    <input type="date" name="data_inizio" value="{{ p.data_inizio }}" required>
+                </div>
+                <div style="flex:1">
+                    <label>Scadenza</label>
+                    <input type="date" name="data" value="{{ p.data_consegna }}" required>
+                </div>
             </div>
 
             <label>Ore Stimate Totali</label>
             <input type="number" name="ore" value="{{ p.ore_stimate }}" required>
-            
+
             <div class="row">
                 <label>Margine %</label>
                 <input type="number" name="margine" value="{{ p.margine }}">
@@ -40,55 +39,50 @@
 
             <hr>
             <h4>Composizione Team Richiesta:</h4>
-            
+
             <div class="row">
                 <label style="flex:1">Developer (Qty / %):</label>
-                <input type="number" name="qty_dev" value="{{ reqs['Developer']['qty'] }}" min="0" style="flex:1" placeholder="N°">
-                <input type="number" name="pct_dev" value="{{ reqs['Developer']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
+                <input type="number" name="qty_dev" value="{{ reqs['Developer']['qty'] }}" min="0" style="flex:1">
+                <input type="number" name="pct_dev" id="pct_dev" value="{{ reqs['Developer']['perc'] }}" min="0"
+                    max="100" style="flex:1">
             </div>
 
             <div class="row">
                 <label style="flex:1">Tester (Qty / %):</label>
-                <input type="number" name="qty_tester" value="{{ reqs['Tester']['qty'] }}" min="0" style="flex:1" placeholder="N°">
-                <input type="number" name="pct_tester" value="{{ reqs['Tester']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
+                <input type="number" name="qty_tester" value="{{ reqs['Tester']['qty'] }}" min="0" style="flex:1">
+                <input type="number" name="pct_tester" id="pct_tester" value="{{ reqs['Tester']['perc'] }}" min="0"
+                    max="100" style="flex:1">
             </div>
 
             <div class="row">
                 <label style="flex:1">PM (Qty / %):</label>
-                <input type="number" name="qty_pm" value="{{ reqs['PM']['qty'] }}" min="0" style="flex:1" placeholder="N°">
-                <input type="number" name="pct_pm" value="{{ reqs['PM']['perc'] }}" min="0" max="100" style="flex:1" placeholder="%">
+                <input type="number" name="qty_pm" value="{{ reqs['PM']['qty'] }}" min="0" style="flex:1">
+                <input type="number" name="pct_pm" id="pct_pm" value="{{ reqs['PM']['perc'] }}" min="0" max="100"
+                    style="flex:1">
             </div>
-
-            <p style="font-size:0.8rem; color:#666; margin-top:5px;">* La somma delle percentuali deve fare 100%.</p>
 
             <div class="row" style="margin-top: 20px;">
                 <button type="submit" class="btn-calcola">💾 Salva Modifiche</button>
             </div>
         </form>
-        
+
         <br>
         <div style="text-align: right;">
-            <a href="/elimina_progetto/{{ p.id }}" style="color: red; font-size: 0.9rem;" onclick="return confirm('Sei sicuro di voler eliminare questo progetto?')">🗑️ Elimina definitivamente</a>
+            <a href="/elimina_progetto/{{ p.id }}" style="color: red; font-size: 0.9rem;"
+                onclick="return confirm('Sei sicuro?')">🗑️ Elimina definitivamente</a>
         </div>
-
     </div>
 </div>
 
 <script>
     function validaPercentuali() {
-        var p1 = parseInt(document.getElementsByName('pct_dev')[0].value) || 0;
-        var p2 = parseInt(document.getElementsByName('pct_tester')[0].value) || 0;
-        var p3 = parseInt(document.getElementsByName('pct_pm')[0].value) || 0;
-
-        var totale = p1 + p2 + p3;
-
-        if (totale !== 100) {
-            alert("⚠️ ATTENZIONE!\n\nLa somma delle percentuali deve essere esattamente 100%.\nSomma attuale: " + totale + "%");
-            return false;
+        var p1 = parseInt(document.getElementById('pct_dev').value) || 0;
+        var p2 = parseInt(document.getElementById('pct_tester').value) || 0;
+        var p3 = parseInt(document.getElementById('pct_pm').value) || 0;
+        if ((p1 + p2 + p3) !== 100) {
+            alert("La somma delle percentuali deve essere 100%"); return false;
         }
         return true;
     }
 </script>
-
-</body>
-</html>
+{% endblock %}

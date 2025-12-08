@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; gap: 30px;">
+    
+    <div class="col-input" style="flex: 1;">
+        <div class="card">
+            <h2>Aggiungi Risorsa</h2>
+            <form action="/aggiungi_risorsa" method="POST">
+                <input type="text" name="nome" placeholder="Nome" required>
+                <select name="skill">
+                    <option value="Developer">Developer</option>
+                    <option value="Tester">Tester</option>
+                    <option value="PM">Project Manager</option>
+                </select>
+                <input type="number" name="ore" placeholder="Ore Totali" required>
+                <button type="submit">Salva Risorsa</button>
+            </form>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #f39c12;">
+            <h2>Registra Assenza 🏖️</h2>
+            <form action="/aggiungi_assenza" method="POST">
+                <select name="risorsa_id" required>
+                    {% for r in risorse %}
+                    <option value="{{ r.id }}">{{ r.nome }} ({{ r.skill }})</option>
+                    {% endfor %}
+                </select>
+                
+                <div class="row">
+                    <div style="flex:1">
+                        <label>Dal</label>
+                        <input type="date" name="inizio" required>
+                    </div>
+                    <div style="flex:1">
+                        <label>Al</label>
+                        <input type="date" name="fine" required>
+                    </div>
+                </div>
+
+                <input type="text" name="motivo" placeholder="Motivo (es. Ferie Estive)" required>
+                
+                <button type="submit" style="background-color: #f39c12;">Salva Assenza</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-data" style="flex: 2;">
+        <h2>Stato Risorse </h2>
+        <table style="font-size: 0.95rem;">
+            <thead>
+                <tr>
+                    <th style="width:25%">Risorsa</th>
+                    <th style="width:55%">Carico di Lavoro (Progetti + Assenze)</th>
+                    <th style="width:15%">Residuo</th>
+                    <th style="width:5%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in risorse %}
+                    {% set live = r.dati_live %}
+                    {% set impegnate = live.ore_impegnate if live else 0 %}
+                    {% set assenze = live.ore_assenze if live else 0 %}
+                    {% set totale = r.ore_totali %}
+                    {% set libere = live.ore_residue if live else totale %}
+                    
+                    {% set perc_prog = (impegnate / totale * 100) | int %}
+                    {% set perc_ass = (assenze / totale * 100) | int %}
+                    
+                <tr>
+                    <td>
+                        <strong>{{ r.nome }}</strong><br>
+                        <span class="badge">{{ r.skill }}</span>
+                    </td>
+                    <td>
+                        <div style="display:flex; height:20px; width:100%; background:#ecf0f1; border-radius:4px; overflow:hidden; margin-bottom:5px;">
+                            
+                            {% if perc_prog > 0 %}
+                            <div style="width:{{perc_prog}}%; background:#3498db; color:white; font-size:0.7rem; text-align:center; display:flex; align-items:center; justify-content:center;" title="Progetti: {{impegnate}}h">
+                                {{ impegnate|round(0)|int }}h
+                            </div>
+                            {% endif %}
+                            
+                            {% if perc_ass > 0 %}
+                            <div style="width:{{perc_ass}}%; background:#f39c12; color:white; font-size:0.7rem; text-align:center; display:flex; align-items:center; justify-content:center;" title="Assenze: {{assenze}}h">
+                                🏖️
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#666;">
+                            <span>Contrattuali: {{ totale }}h</span>
+                            {% if assenze > 0 %}
+                                <span style="color:#e67e22;">Ferie: -{{ assenze }}h</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <strong style="color: {{ '#27ae60' if libere > 0 else '#c0392b' }}; font-size:1.1rem;">
+                            {{ libere | round(1) }}h
+                        </strong>
+                        <br><small style="color:#999">Libere</small>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <a href="/modifica_risorsa/{{ r.id }}" style="text-decoration:none; font-size:1.2rem;">✏️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
