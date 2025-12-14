@@ -25,7 +25,7 @@ class Progetto:
         self, 
         nome: str, 
         priorita: int, 
-        data_inizio: Union[str, date, datetime],    # <--- NUOVO PARAMETRO
+        data_inizio: Union[str, date, datetime],    
         data_consegna: Union[str, date, datetime], 
         ore_stimate: int, 
         margine_percentuale: int, 
@@ -38,7 +38,7 @@ class Progetto:
         self.priorita = priorita
         
         # Normalizziamo entrambe le date
-        self.data_inizio = self._normalizza_data(data_inizio)       # <--- NUOVO CAMPO
+        self.data_inizio = self._normalizza_data(data_inizio)      
         self.data_consegna = self._normalizza_data(data_consegna)
         
         self.requisiti = requisiti

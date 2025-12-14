@@ -12,7 +12,7 @@ body {
 
 /* Menu Navigazione */
 .nav-link {
-    color: #ecf0f1;
+    color: #ffffff;
     text-decoration: none;
     font-weight: bold;
     font-size: 1.1rem;
@@ -104,44 +104,3 @@ th {
     background: #e0e0e0;
 }
 
-/* Risultati */
-.container-result {
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-}
-
-.card-result {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    border-left: 6px solid #ccc;
-}
-
-.card-result.success {
-    border-left-color: #27ae60;
-}
-
-.card-result.error {
-    border-left-color: #c0392b;
-    background-color: #fff5f5;
-}
-
-.progress-bar-bg {
-    background-color: #ecf0f1;
-    border-radius: 10px;
-    height: 20px;
-    width: 100%;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    background-color: #3498db;
-    height: 100%;
-    text-align: center;
-    font-size: 0.8rem;
-    color: white;
-    line-height: 20px;
-}

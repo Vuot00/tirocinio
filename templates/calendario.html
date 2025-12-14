@@ -126,6 +126,26 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+
+    // --- FUNZIONE PER GENERARE COLORI DINAMICI ---
+    // Genera un colore esadecimale basato su una stringa (es. titolo evento)
+    // in modo che lo stesso evento abbia sempre lo stesso colore.
+    function getStringColor(str) {
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        var color = '#';
+        for (var i = 0; i < 3; i++) {
+            var value = (hash >> (i * 8)) & 0xFF;
+            // Aggiungiamo un po' di "pastello" per renderli leggibili (mix con bianco)
+            // Se vuoi colori più scuri/forti, rimuovi la logica seguente e usa solo value.toString(16)
+            var mixedValue = Math.floor((value + 150) / 2); 
+            var part = ('00' + mixedValue.toString(16)).substr(-2);
+            color += part;
+        }
+        return color;
+    }
     
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
@@ -152,6 +172,7 @@
       events: '/api/eventi_calendario',
 
       eventDidMount: function(info) {
+        // 1. Gestione Tooltip (il tuo codice originale)
         var endStr = "";
         if(info.event.end) {
             var realEnd = new Date(info.event.end);
@@ -160,6 +181,20 @@
         }
         var tooltip = info.event.title + "\n(" + info.event.start.toLocaleDateString() + endStr + ")";
         info.el.setAttribute('title', tooltip);
+
+        // 2. Gestione Colore Dinamico
+        // Se l'evento non ha già un colore forzato dal backend...
+        if (!info.event.backgroundColor) {
+            // Genera colore basato sul titolo (o usa info.event.id se preferisci)
+            var dynamicColor = getStringColor(info.event.title);
+            
+            // Applica lo stile direttamente all'elemento DOM
+            info.el.style.backgroundColor = dynamicColor;
+            info.el.style.borderColor = dynamicColor;
+            
+            // Opzionale: assicura che il testo sia scuro se usi colori pastello chiari
+            info.el.style.color = '#333333'; 
+        }
       },
 
       eventClick: function(info) {

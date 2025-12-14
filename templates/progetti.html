@@ -31,8 +31,8 @@
             <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
                 <input type="text" name="nome" placeholder="Nome Progetto" required>
                 <div class="row">
-                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="5" min="1" max="10"></div>
-                    <div style="flex:1"><label>Margine %</label> <input type="number" name="margine" value="15"></div>
+                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="1" min="1" max="5"></div>
+                    <div style="flex:1"><label>Margine %</label> <input type="number" name="margine" value="5"></div>
                 </div>
                 <div class="row">
                     <div style="flex:1"><label>Inizio</label> <input type="date" name="data_inizio" required min="{{ today }}"></div>
@@ -186,5 +186,37 @@ function validaPercentuali() {
     }
     return true;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Elenco dei nomi dei campi da monitorare (Quantità e Percentuali)
+    var inputNames = [
+        'qty_dev', 'pct_dev',
+        'qty_tester', 'pct_tester',
+        'qty_pm', 'pct_pm'
+    ];
+
+    inputNames.forEach(function(name) {
+        // Seleziona l'input basandosi sul nome
+        var inputElement = document.querySelector('input[name="' + name + '"]');
+        
+        if (inputElement) {
+            // Aggiunge un "ascoltatore" per quando l'utente esce dal campo (blur)
+            inputElement.addEventListener('blur', function() {
+                // Se il campo è vuoto, imposta 0
+                if (this.value === '') {
+                    this.value = '0';
+                }
+            });
+
+            // Opzionale: Se vuoi che quando clicchi lo '0' sparisca per scrivere meglio
+            inputElement.addEventListener('focus', function() {
+                if (this.value === '0') {
+                    this.value = '';
+                }
+            });
+        }
+    });
+});
+
 </script>
 {% endblock %}
