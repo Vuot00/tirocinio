@@ -193,14 +193,16 @@
                         }}%)
                     </div>
                     <div>
-                        <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️ Modifica</a>
+                        <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️
+                            Modifica</a>
 
                         {% if p.stato_db == 'Sospeso' %}
                         <a href="/cambia_stato/{{ p.id }}/In svolgimento"
                             style="text-decoration:none; color:#27ae60;">▶️ Riattiva</a>
 
                         {% elif p.stato_db != 'Concluso' %}
-                        <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️ Sospendi</a>
+                        <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️
+                            Sospendi</a>
 
                         {% endif %}
                     </div>

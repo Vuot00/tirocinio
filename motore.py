@@ -61,25 +61,31 @@ def assegna_risorse(progetti, risorse):
         fattore_pianificazione = calcola_fattore_pianificazione(progetto.margine_percentuale)
         progetto_completamente_coperto = True
         
-        # --- NUOVO CONTROLLO DI FATTIBILITÀ TEMPORALE ---
-        # Calcoliamo se il periodo di tempo del progetto è fisicamente sufficiente per coprire le ore richieste.
+        # 1. Calcolo ore lavorative del calendario (escluso feste/weekend)
         max_ore_lavorabili_periodo = calcola_ore_lavorative_tra_date(progetto.data_inizio, progetto.data_consegna)
 
+        # --- BLOCCO ROSSO: IMPOSSIBILITÀ CALENDARIO (⛔) ---
+        # Scatta se il periodo selezionato è vuoto 
         if max_ore_lavorabili_periodo <= 0:
             progetto.fattibile = False
-            progetto.note.errore = "⛔ {progetto.nome}: IMPOSSIBILE. Il periodo selezionato non ha giorni lavorativi (Feste/Weekend)."
-            print(f"   -> {progetto.note.errore}")
-            # Saltiamo direttamente al prossimo progetto senza nemmeno guardare le risorse
-            continue 
-        if not progetto_completamente_coperto:
-            progetto.fattibile = False
-            if not progetto.note_errore: # Se non c'è già un errore di data
-                progetto.note_errore = "⛔ RISORSE INSUFFICIENTI"
+            progetto.note_errore = "⛔ PERIODO VUOTO: Nessun giorno lavorativo utile tra le date scelte."
             print(f"   -> {progetto.note_errore}")
+            continue 
 
-        # "Fattibilità Teorica"
-        if max_ore_lavorabili_periodo > 0 and progetto.ore_totali_richieste > (max_ore_lavorabili_periodo * 3):
-             progetto.warning_messaggio = f"⚠️ RISCHIO ALTO: Densità eccessiva ({progetto.ore_totali_richieste}h in {max_ore_lavorabili_periodo}h utili)."
+        # --- BLOCCO GIALLO: EROSIONE MARGINE / ALTA DENSITÀ (⚠️) ---
+        # Verifichiamo se il totale ore richieste "ci sta" comodamente nel periodo,
+        # rispettando il cuscinetto (buffer) imposto dal margine.
+        
+        # Es: Se il periodo offre 100h e il margine è 20%, la "Soglia Sicura" è 80h.
+        fattore_pianificazione = calcola_fattore_pianificazione(progetto.margine_percentuale)
+        soglia_sicura_periodo = max_ore_lavorabili_periodo * fattore_pianificazione
+        
+        if progetto.ore_totali_richieste > soglia_sicura_periodo:
+             progetto.warning_messaggio = (
+                 f"⚠️ RISCHIO TEMPI: Richieste {progetto.ore_totali_richieste}h su {int(max_ore_lavorabili_periodo)}h disponibili. "
+                 f"Stai erodendo il buffer di sicurezza del {progetto.margine_percentuale}% "
+                 f"(Soglia sicura: {int(soglia_sicura_periodo)}h)."
+             )
              print(f"   -> {progetto.warning_messaggio}")
         
         
