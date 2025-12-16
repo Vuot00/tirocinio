@@ -51,6 +51,7 @@ class Progetto:
         self.fattibile = True
         
         self.note_errore = "" 
+        self.warning_messaggio = ""
 
     @staticmethod
     def _normalizza_data(valore_data) -> datetime:
