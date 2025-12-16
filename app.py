@@ -125,15 +125,22 @@ def api_eventi():
     progetti = ProgettoDB.query.filter(ProgettoDB.stato != 'Concluso').all()
     eventi = []
     for p in progetti:
-        colore = '#3498db' # In svolgimento
-        if p.stato == 'Sospeso': colore = '#95a5a6'
-        elif p.stato == 'Pianificato': colore = '#9b59b6' # Viola per futuri
+        colore = '#3788d8'
+        if p.stato == 'Pianificato':
+            colore = '#9b59b6'  
+        elif p.stato == 'In svolgimento':
+            colore = '#27ae60'  
+        elif p.stato == 'Sospeso':
+            colore = '#f39c12'  
+        elif p.stato == 'Concluso':
+            colore = '#7f8c8d'  
         
-        if p.priorita == 1 and p.stato != 'Sospeso': colore = '#e74c3c'
+        # if p.priorita == 1 and p.stato != 'Sospeso': 
+        #    colore = '#e74c3c'
         
         data_fine_vis = p.data_consegna + timedelta(days=1)
         eventi.append({
-            'title': f"[{p.stato[0].upper()}] {p.nome}",
+            'title': f"[{p.stato.upper()}] {p.nome}",
             'start': p.data_inizio.strftime('%Y-%m-%d'),
             'end': data_fine_vis.strftime('%Y-%m-%d'),
             'color': colore,

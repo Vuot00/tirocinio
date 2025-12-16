@@ -76,11 +76,13 @@
             <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
                 <input type="text" name="nome" placeholder="Nome Progetto" required>
                 <div class="row">
-                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="1" min="1" max="5"></div>
+                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="1" min="1"
+                            max="5"></div>
                     <div style="flex:1"><label>Margine %</label> <input type="number" name="margine" value="5"></div>
                 </div>
                 <div class="row">
-                    <div style="flex:1"><label>Inizio</label> <input type="date" name="data_inizio" required min="{{ today }}"></div>
+                    <div style="flex:1"><label>Inizio</label> <input type="date" name="data_inizio" required
+                            min="{{ today }}"></div>
                     <div style="flex:1"><label>Fine</label> <input type="date" name="data" required min="{{ today }}">
                     </div>
                 </div>
@@ -121,129 +123,140 @@
         </div>
 
         {% for p in progetti %}
-            {% set border_color = '#7f8c8d' %}
-            {% if p.stato_db == 'In svolgimento' %}
-                {% set border_color = '#27ae60' if p.fattibile else '#c0392b' %}
-                {# Se è fattibile MA rischioso (warning), usiamo Arancione #}
-                {% if p.fattibile and p.warning_messaggio %}
-                    {% set border_color = '#f39c12' %}
+        {% set border_color = '#7f8c8d' %}
+        {% if p.stato_db == 'In svolgimento' %}
+        {% set border_color = '#27ae60' if p.fattibile else '#c0392b' %}
+        {# Se è fattibile MA rischioso (warning), usiamo Arancione #}
+        {% if p.fattibile and p.warning_messaggio %}
+        {% set border_color = '#f39c12' %}
+        {% endif %}
+        {% elif p.stato_db == 'Pianificato' %}
+        {% set border_color = '#9b59b6' if p.fattibile else '#c0392b' %}
+        {% elif p.stato_db == 'Sospeso' %}
+        {% set border_color = '#f39c12' %}
+        {% endif %}
+
+        <details style="position: relative;">
+            <div class="status-indicator" style="background-color: {{ border_color }};"></div>
+
+            <summary>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <strong style="font-size: 1.1rem;">{{ p.nome }}</strong>
+
+                        {% if p.stato_db == 'In svolgimento' %}
+                        {% if p.fattibile %}
+                        <span class="badge" style="background:#27ae60; color:white;">IN CORSO</span>
+                        {% else %}
+                        <span class="badge" style="background:#c0392b; color:white;">BLOCCATO</span>
+                        {% endif %}
+                        {% elif p.stato_db == 'Pianificato' %}
+                        <span class="badge" style="background:#9b59b6; color:white;">PIANIFICATO</span>
+                        {% elif p.stato_db == 'Sospeso' %}
+                        <span class="badge" style="background:#f39c12; color:white;">SOSPESO</span>
+                        {% else %}
+                        <span class="badge" style="background:#7f8c8d; color:white;">CONCLUSO</span>
+                        {% endif %}
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: #666;">
+                        <span style="background: #eee; padding: 2px 6px; border-radius: 4px;">P{{ p.priorita }}</span>
+                        {{ p.data_inizio.strftime('%d/%m') }} ➝ {{ p.data_consegna.strftime('%d/%m/%Y') }}
+
+                        {% if p.stato_db in ['In svolgimento', 'Pianificato'] %}
+                        {% if p.fattibile %}
+                        <span style="color: #27ae60; font-weight: bold; margin-left: 10px;">✅ FATTIBILE</span>
+
+                        {% if p.warning_messaggio %}
+                        <span
+                            style="color: #e67e22; font-weight: bold; margin-left: 10px; background: #fff3cd; padding: 2px 5px; border-radius: 4px; border: 1px solid #e67e22;">
+                            ⚠️ RISCHIO TEMPI
+                        </span>
+                        {% endif %}
+
+                        {% else %}
+                        <span style="color: #c0392b; font-weight: bold; margin-left: 10px;">
+                            {{ p.note_errore if p.note_errore else "⛔ CARENZA RISORSE" }}
+                        </span>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <span style="font-size: 1.2rem;">🔽</span>
+            </summary>
+
+            <div class="details-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <div>
+                        <strong>Totale Ore:</strong> {{ p.ore_totali_richieste }}h (Margine: {{ p.margine_percentuale
+                        }}%)
+                    </div>
+                    <div>
+                        <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️ Modifica</a>
+
+                        {% if p.stato_db == 'Sospeso' %}
+                        <a href="/cambia_stato/{{ p.id }}/In svolgimento"
+                            style="text-decoration:none; color:#27ae60;">▶️ Riattiva</a>
+
+                        {% elif p.stato_db != 'Concluso' %}
+                        <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️ Sospendi</a>
+
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if p.warning_messaggio %}
+                <div
+                    style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba; margin-bottom: 15px;">
+                    <strong>Attenzione alla pianificazione:</strong><br>
+                    {{ p.warning_messaggio }}
+                    <br>
+                    <small>Anche se hai le risorse, i tempi sono molto stretti per la quantità di lavoro (densità
+                        elevata).</small>
+                </div>
                 {% endif %}
-            {% elif p.stato_db == 'Pianificato' %}
-                {% set border_color = '#9b59b6' if p.fattibile else '#c0392b' %}
-            {% elif p.stato_db == 'Sospeso' %}
-                {% set border_color = '#f39c12' %}
-            {% endif %}
 
-            <details style="position: relative;">
-                <div class="status-indicator" style="background-color: {{ border_color }};"></div>
-
-                <summary>
-                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <strong style="font-size: 1.1rem;">{{ p.nome }}</strong>
-
-                            {% if p.stato_db == 'In svolgimento' %}
-                                {% if p.fattibile %}
-                                    <span class="badge" style="background:#27ae60; color:white;">IN CORSO</span>
-                                {% else %}
-                                    <span class="badge" style="background:#c0392b; color:white;">BLOCCATO</span>
-                                {% endif %}
-                            {% elif p.stato_db == 'Pianificato' %}
-                                <span class="badge" style="background:#9b59b6; color:white;">PIANIFICATO</span>
-                            {% elif p.stato_db == 'Sospeso' %}
-                                <span class="badge" style="background:#f39c12; color:white;">SOSPESO</span>
-                            {% else %}
-                                <span class="badge" style="background:#7f8c8d; color:white;">CONCLUSO</span>
-                            {% endif %}
-                        </div>
-
-                        <div style="font-size: 0.85rem; color: #666;">
-                            <span style="background: #eee; padding: 2px 6px; border-radius: 4px;">P{{ p.priorita }}</span>
-                            {{ p.data_inizio.strftime('%d/%m') }} ➝ {{ p.data_consegna.strftime('%d/%m/%Y') }}
-
-                            {% if p.stato_db in ['In svolgimento', 'Pianificato'] %}
-                                {% if p.fattibile %}
-                                    <span style="color: #27ae60; font-weight: bold; margin-left: 10px;">✅ FATTIBILE</span>
-                                    
-                                    {% if p.warning_messaggio %}
-                                        <span style="color: #e67e22; font-weight: bold; margin-left: 10px; background: #fff3cd; padding: 2px 5px; border-radius: 4px; border: 1px solid #e67e22;">
-                                            ⚠️ RISCHIO TEMPI
-                                        </span>
-                                    {% endif %}
-                                    
-                                {% else %}
-                                    <span style="color: #c0392b; font-weight: bold; margin-left: 10px;">
-                                        {{ p.note_errore if p.note_errore else "⛔ CARENZA RISORSE" }}
-                                    </span>
-                                {% endif %}
-                            {% endif %}
-                        </div>
+                {% if p.assegnazioni_dettagliate %}
+                {% for assegnazione in p.assegnazioni_dettagliate %}
+                <div class="resource-row">
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                        <span><strong>{{ assegnazione.nome_risorsa }}</strong> <span style="color:#666;">({{
+                                assegnazione.skill }})</span></span>
+                        <span>{{ assegnazione.ore_su_questo_progetto }}h</span>
                     </div>
-
-                    <span style="font-size: 1.2rem;">🔽</span>
-                </summary>
-
-                <div class="details-content">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                        <div>
-                            <strong>Totale Ore:</strong> {{ p.ore_totali_richieste }}h (Margine: {{ p.margine_percentuale }}%)
-                        </div>
-                        <div>
-                            <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️ Modifica</a>
-
-                            {% if p.stato_db != 'Sospeso' %}
-                                <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️ Sospendi</a>
-                            {% else %}
-                                <a href="/cambia_stato/{{ p.id }}/In svolgimento" style="text-decoration:none; color:#27ae60;">▶️ Riattiva</a>
-                            {% endif %}
-                        </div>
+                    {% set perc = (assegnazione.ore_su_questo_progetto / assegnazione.ore_nette_risorsa * 100) | int %}
+                    <div class="res-bar-bg">
+                        <div class="res-bar-fill" style="width: {{ perc }}%;"></div>
                     </div>
+                </div>
+                {% endfor %}
 
-                    {% if p.warning_messaggio %}
-                        <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba; margin-bottom: 15px;">
-                            <strong>Attenzione alla pianificazione:</strong><br>
-                            {{ p.warning_messaggio }}
-                            <br>
-                            <small>Anche se hai le risorse, i tempi sono molto stretti per la quantità di lavoro (densità elevata).</small>
-                        </div>
-                    {% endif %}
+                {% elif p.stato_db in ['In svolgimento', 'Pianificato'] and not p.fattibile %}
+                <div
+                    style="color: #c0392b; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #c0392b;">
 
-                    {% if p.assegnazioni_dettagliate %}
-                        {% for assegnazione in p.assegnazioni_dettagliate %}
-                        <div class="resource-row">
-                            <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-                                <span><strong>{{ assegnazione.nome_risorsa }}</strong> <span style="color:#666;">({{ assegnazione.skill }})</span></span>
-                                <span>{{ assegnazione.ore_su_questo_progetto }}h</span>
-                            </div>
-                            {% set perc = (assegnazione.ore_su_questo_progetto / assegnazione.ore_nette_risorsa * 100) | int %}
-                            <div class="res-bar-bg">
-                                <div class="res-bar-fill" style="width: {{ perc }}%;"></div>
-                            </div>
-                        </div>
-                        {% endfor %}
+                    {# Titolo Errore #}
+                    {{ p.note_errore if p.note_errore else "⚠️ PROGETTO FERMO: Risorse insufficienti." }}
 
-                    {% elif p.stato_db in ['In svolgimento', 'Pianificato'] and not p.fattibile %}
-                        <div style="color: #c0392b; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #c0392b;">
+                    <br>
+                    <small style="font-weight: normal; color: #555;">
+                        {% if "PERIODO" in p.note_errore %}
+                        Le date selezionate cadono interamente su giorni festivi o weekend. Controlla il calendario.
+                        {% else %}
+                        Nonostante il periodo sia lavorativo, non ci sono abbastanza risorse (Dev/Tester/PM) libere per
+                        coprire le ore richieste.
+                        {% endif %}
+                    </small>
+                </div>
 
-                            {# Titolo Errore #}
-                            {{ p.note_errore if p.note_errore else "⚠️ PROGETTO FERMO: Risorse insufficienti." }}
-
-                            <br>
-                            <small style="font-weight: normal; color: #555;">
-                                {% if "PERIODO" in p.note_errore %}
-                                    Le date selezionate cadono interamente su giorni festivi o weekend. Controlla il calendario.
-                                {% else %}
-                                    Nonostante il periodo sia lavorativo, non ci sono abbastanza risorse (Dev/Tester/PM) libere per coprire le ore richieste.
-                                {% endif %}
-                            </small>
-                        </div>
-                    
-                    {% else %}
-                        {# Caso fallback se non ci sono dettagli e non è bloccato (es. Sospeso/Concluso) #}
-                        <p style="color: #7f8c8d; font-style: italic;">Il progetto è sospeso o concluso, le risorse sono state liberate.</p>
-                    {% endif %} 
-                </div> 
-            </details> 
+                {% else %}
+                {# Caso fallback se non ci sono dettagli e non è bloccato (es. Sospeso/Concluso) #}
+                <p style="color: #7f8c8d; font-style: italic;">Il progetto è sospeso o concluso, le risorse sono state
+                    liberate.</p>
+                {% endif %}
+            </div>
+        </details>
         {% endfor %}
     </div>
 </div>
