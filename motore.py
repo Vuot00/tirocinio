@@ -59,7 +59,7 @@ def assegna_risorse(progetti, risorse):
 
                 ore_ancora_da_coprire -= progresso_reale
                 
-                # --- MODIFICA FONDAMENTALE PER LA GRAFICA ---
+
                 # Salviamo i dettagli per disegnare la barra specifica di questo progetto
                 progetto.assegnazioni_dettagliate.append({
                     'nome_risorsa': risorsa.nome,

@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-    /* --- LAYOUT FULL SCREEN --- */
     html, body {
         height: 100%;
         margin: 0;
@@ -39,9 +38,6 @@
         font-size: 0.85rem;
     }
 
-    /* --- STILE HEADER E BOTTONI --- */
-    
-    /* Forza l'allineamento orizzontale della barra strumenti */
     .fc-header-toolbar {
         display: flex !important;
         justify-content: space-between !important;
@@ -50,11 +46,10 @@
         height: auto !important;
     }
 
-    /* Questo raggruppa i bottoni sulla destra o sinistra */
     .fc-toolbar-chunk {
         display: flex !important;
         align-items: center !important;
-        gap: 5px; /* Spazio tra i bottoni */
+        gap: 5px; 
     }
 
     .fc-toolbar-title {
@@ -63,7 +58,6 @@
         font-weight: 600;
     }
     
-    /* Stile Bottoni "Ghost" Minimal */
     .fc-button {
         background-color: white !important;
         border: 1px solid #ddd !important;
@@ -74,7 +68,7 @@
         text-transform: capitalize;
         border-radius: 4px !important;
         transition: all 0.2s ease;
-        display: inline-flex !important; /* Forza in linea */
+        display: inline-flex !important; 
         align-items: center;
         justify-content: center;
     }
@@ -127,9 +121,6 @@
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
-    // --- FUNZIONE PER GENERARE COLORI DINAMICI ---
-    // Genera un colore esadecimale basato su una stringa (es. titolo evento)
-    // in modo che lo stesso evento abbia sempre lo stesso colore.
     function getStringColor(str) {
         var hash = 0;
         for (var i = 0; i < str.length; i++) {
@@ -138,8 +129,6 @@
         var color = '#';
         for (var i = 0; i < 3; i++) {
             var value = (hash >> (i * 8)) & 0xFF;
-            // Aggiungiamo un po' di "pastello" per renderli leggibili (mix con bianco)
-            // Se vuoi colori più scuri/forti, rimuovi la logica seguente e usa solo value.toString(16)
             var mixedValue = Math.floor((value + 150) / 2); 
             var part = ('00' + mixedValue.toString(16)).substr(-2);
             color += part;
@@ -150,29 +139,44 @@
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       locale: 'it',
+      firstDay: 1,
       height: '100%',
       expandRows: true, 
       
-      // --- CONFIGURAZIONE HEADER TOOLBAR ---
       headerToolbar: {
-        left: 'title', // Titolo a sinistra
-        center: '',    // Nulla al centro
-        // "today" spazio "prev,next" (la virgola li unisce, lo spazio li separa)
+        left: 'title',
+        center: '',
         right: 'today prev,next' 
       },
       
       buttonText: {
-        today: 'Oggi' // Traduzione manuale pulita
+        today: 'Oggi'
       },
       
       navLinks: false,
       dayMaxEvents: true,
       fixedWeekCount: false,
 
-      events: '/api/eventi_calendario',
+      eventSources: [
+        {
+            url: '/api/eventi_calendario',
+            color: '#3788d8', 
+            textColor: '#ffffff'
+        },
+        {
+            url: '/api/festivita',
+            display: 'block' 
+        }
+      ],
 
       eventDidMount: function(info) {
-        // 1. Gestione Tooltip (il tuo codice originale)
+        if (info.event.classNames.includes('evento-festivo')) {
+            info.el.style.fontWeight = 'bold';
+            info.el.style.cursor = 'default';
+            info.el.style.border = '1px solid #ff9999';
+            return;
+        }
+
         var endStr = "";
         if(info.event.end) {
             var realEnd = new Date(info.event.end);
@@ -182,17 +186,10 @@
         var tooltip = info.event.title + "\n(" + info.event.start.toLocaleDateString() + endStr + ")";
         info.el.setAttribute('title', tooltip);
 
-        // 2. Gestione Colore Dinamico
-        // Se l'evento non ha già un colore forzato dal backend...
         if (!info.event.backgroundColor) {
-            // Genera colore basato sul titolo (o usa info.event.id se preferisci)
             var dynamicColor = getStringColor(info.event.title);
-            
-            // Applica lo stile direttamente all'elemento DOM
             info.el.style.backgroundColor = dynamicColor;
             info.el.style.borderColor = dynamicColor;
-            
-            // Opzionale: assicura che il testo sia scuro se usi colori pastello chiari
             info.el.style.color = '#333333'; 
         }
       },

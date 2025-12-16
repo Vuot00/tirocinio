@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from datetime import datetime, date, timedelta
 import motore
+import holidays
 from db_manager import db, RisorsaDB, ProgettoDB, AssenzaDB
 from config_modelli import BEST_PRACTICE
 
@@ -140,6 +141,43 @@ def api_eventi():
             'allDay': True
         })
     return jsonify(eventi)
+
+@app.route('/api/festivita')
+def api_festivita():
+    anno_corrente = date.today().year
+    feste_it = holidays.IT(years=[anno_corrente, anno_corrente + 1])
+
+    traduzioni = {
+        "New Year's Day": "Capodanno",
+        "Epiphany": "Epifania",
+        "Easter Monday": "Pasquetta",
+        "Liberation Day": "Festa della Liberazione",
+        "Labor Day": "Festa dei Lavoratori",
+        "Republic Day": "Festa della Repubblica",
+        "Assumption Of Mary Day": "Ferragosto",
+        "All Saints' Day": "Ognissanti",
+        "Immaculate Conception": "Immacolata Concezione",
+        "Christmas Day": "Natale",
+        "Saint Stephen's Day": "Santo Stefano",
+        "National Unity Day": "Giornata dell'Unità Nazionale",
+        "Saint Francis of Assisi, Patron Saint of Italy": "San Francesco (Patrono d'Italia)"
+    }
+    
+    eventi_festivi = []
+    
+    for data, nome_inglese in feste_it.items():
+        nome_italiano = traduzioni.get(nome_inglese, nome_inglese)
+        eventi_festivi.append({
+            'title': f"{nome_italiano}",  
+            'start': data.isoformat(),
+            'allDay': True,
+            'textColor': "#000000",
+            'backgroundColor': '#ffcccc', 
+            'className': 'giorno-festivo', 
+            'editable': False  
+        })
+        
+    return jsonify(eventi_festivi)
 
 @app.route('/cambia_stato/<int:id>/<nuovo_stato>')
 def cambia_stato(id, nuovo_stato):
