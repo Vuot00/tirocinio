@@ -135,6 +135,7 @@ def api_eventi():
         elif p.stato == 'Concluso':
             colore = '#7f8c8d'  
         
+        # Aggiunta futura: evidenziazione priorità alta
         # if p.priorita == 1 and p.stato != 'Sospeso': 
         #    colore = '#e74c3c'
         
