@@ -49,6 +49,8 @@ class Progetto:
         self.ore_ancora_da_coprire = self.ore_totali_richieste
         self.assegnazioni_dettagliate = [] 
         self.fattibile = True
+        
+        self.note_errore = "" 
 
     @staticmethod
     def _normalizza_data(valore_data) -> datetime:

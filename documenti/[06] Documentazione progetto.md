@@ -150,7 +150,7 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
   - **Cosa:** Non tutti i "Developer" sono uguali. Aggiungi un livello (es. 1-5 o Junior/Senior) alla risorsa e un "requisito minimo" al progetto.
   - **Perché:** Evita di assegnare un progetto architettonico complesso a un junior appena assunto.
 
-- [ ] **🏖️ Festività Nazionali (Global Holidays)**
+- [x] **🏖️ Festività Nazionali (Global Holidays)**
   - **Cosa:** Aggiungi una tabella "Giorni Festivi" (es. Natale, Ferragosto) che valgono per tutti, integrando librerie come `holidays`.
   - **Perché:** Risparmi tempo (non devi inserire le feste comandate a mano per ogni dipendente) e rendi il calcolo più preciso.
 
