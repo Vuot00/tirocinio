@@ -1,112 +1,237 @@
-# 📅 Agenda di Sviluppo: Pianificatore Risorse
+# 📅 Agenda di Sviluppo: Pianificatore Risorse (WIP)
 
-**Periodo:** 19 Novembre 2025 – 18 Dicembre 2025  
-**Oggetto:** Diario delle attività giornaliere (Analisi e Sviluppo Software)
+**Stato Progetto:** 🚧 IN CORSO  
+**Ultimo aggiornamento:** 18 Dicembre 2025
 
 ---
 
 ## 📘 FASE 1: ANALISI, STUDIO E PROGETTAZIONE
 **Periodo:** 19 Novembre – 02 Dicembre  
-**Focus:** Stesura documentazione, definizione algoritmi e requisiti.
+**Obiettivo:** Definizione modello matematico e requisiti (No Code).
 
 ### Settimana 1
 
 * **19 Novembre (Mar): Analisi Preliminare e Concettualizzazione**
     * *Attività:* Analisi del problema di allocazione risorse. Definizione dei pilastri del modello deterministico (priorità fissa, non riassegnazione).
-    * *Output:* Stesura bozza documento `[01] Idea di fondo.md`.
+    * *Rif:* `[01] Idea di fondo.md`
 
 * **20 Novembre (Mer): Definizione Algoritmo Core**
-    * *Attività:* Studio della logica di assegnazione "Greedy". Definizione del criterio di selezione risorse basato sulla disponibilità residua.
-    * *Output:* Stesura `[02] Approfondimento su algoritmo di assegnazione ore.md`.
+    * *Attività:* Studio della logica di assegnazione "Greedy" e criterio selezione risorse (disponibilità residua).
+    * *Rif:* `[02] Approfondimento su algoritmo di assegnazione ore.md`
 
 * **21 Novembre (Gio): Studio Margini di Sicurezza**
-    * *Attività:* Analisi delle problematiche di stima e rischio. Introduzione teorica del buffer per mitigare i falsi negativi.
-    * *Output:* Stesura `[03] Sviluppo con introduzione di margine di sicurezza sulle stime.md`.
+    * *Attività:* Analisi rischio stime e introduzione teorica del buffer per mitigare falsi negativi.
+    * *Rif:* `[03] Sviluppo con introduzione di margine di sicurezza sulle stime.md`
 
 * **22 Novembre (Ven): Analisi Impatto sui Ruoli**
-    * *Attività:* Studio matematico di come il margine riduce le percentuali operative reali dei ruoli (Dev/Tester) pur mantenendo le 8 ore contrattuali.
-    * *Output:* Stesura `[04] Ripercussioni sulle percentuali di lavoro per ruolo.md`.
+    * *Attività:* Studio matematico sulla riduzione delle percentuali operative reali (Dev/Tester) a parità di ore contrattuali.
+    * *Rif:* `[04] Ripercussioni sulle percentuali di lavoro per ruolo.md`
 
 ### Settimana 2
 
 * **25 Novembre (Lun): Definizione Vincoli Temporali**
-    * *Attività:* Formalizzazione delle regole sulle ore lavorative (8h/die, Lun-Ven). Conferma che il margine agisce solo sul pianificato.
-    * *Output:* Stesura `[05] Ore lavorative.md`.
+    * *Attività:* Formalizzazione regola 8h lavorative e invarianza orario contrattuale rispetto al margine.
+    * *Rif:* `[05] Ore lavorative.md`
 
 * **26 Novembre (Mar): Progettazione Architettura MVC**
-    * *Attività:* Decisione sullo stack tecnologico: Flask (Controller), SQLAlchemy (Model), Jinja2 (View). Inizio stesura specifiche tecniche.
+    * *Attività:* Scelta stack (Flask, SQLAlchemy) e bozza architettura tecnica.
 
 * **27 Novembre (Mer): Pianificazione Roadmap**
-    * *Attività:* Definizione delle fasi di implementazione (Core Logic -> Database -> Web App). Pianificazione feature "Must Have".
-    * *Output:* Integrazione roadmap in `[06] Documentazione progetto.md`.
+    * *Attività:* Stesura fasi di sviluppo (Core > DB > Web > Advanced) e definizione funzionalità.
+    * *Rif:* `[06] Documentazione progetto.md`
 
 * **28 Novembre (Gio): Modellazione Database (ER)**
-    * *Attività:* Disegno dello schema Entità-Relazione. Definizione relazioni tra Tabelle Risorse, Progetti e Assenze.
+    * *Attività:* Disegno schema relazioni (Risorse ↔ Assenze, Progetti).
 
-* **29 Novembre (Ven): Raffinamento Logiche di Business**
-    * *Attività:* Studio dei casi limite per l'algoritmo (gestione multi-skill, load balancing tra risorse equivalenti).
+* **29 Novembre (Ven): Raffinamento Logiche Business**
+    * *Attività:* Analisi casi limite (load balancing, skill multiple).
 
 ### Settimana 3 (Inizio)
 
 * **02 Dicembre (Lun): Revisione Documentale e Setup**
-    * *Attività:* Revisione finale di tutti i file Markdown. Preparazione ambiente di sviluppo Python (IDE, venv). Chiusura fase di analisi.
+    * *Attività:* Chiusura documenti analisi e preparazione ambiente Python (venv, git init).
 
 ---
 
-## 💻 FASE 2: SVILUPPO SOFTWARE
-**Periodo:** 03 Dicembre – 18 Dicembre  
-**Focus:** Scrittura codice Python, Database e Interfaccia Web.
+## 💻 FASE 2: SVILUPPO SOFTWARE (Core & Web App)
+**Periodo:** 03 Dicembre – Oggi  
+**Obiettivo:** Implementazione Codice Python, Database e Interfaccia.
 
 ### Settimana 3 (Continuazione)
 
 * **03 Dicembre (Mar): Implementazione Modelli Dati**
-    * *Attività:* Traduzione delle entità in classi Python. Definizione template best practice.
-    * *File lavorati:* `modelli.py`, `config_modelli.py`.
+    * *Attività:* Traduzione entità in classi Python (`Risorsa`, `Progetto`) e setup `config_modelli.py`.
+    * *Commit:* Core Logic & Algoritmo.
 
-* **04 Dicembre (Mer): Sviluppo Motore di Allocazione**
-    * *Attività:* Scrittura della funzione `assegna_risorse`, logica di ordinamento e calcolo del `fattore_pianificazione`.
-    * *File lavorati:* `motore.py`.
+* **04 Dicembre (Mer): Sviluppo Motore Allocazione**
+    * *Attività:* Scrittura logica `assegna_risorse`, ordinamento prioritario e calcolo fattore pianificazione.
+    * *File:* `motore.py`.
 
-* **05 Dicembre (Gio): Testing Algoritmico e Debug**
-    * *Attività:* Verifica matematica dell'algoritmo tramite script di test isolati (Mock Data).
-    * *File lavorati:* `test_manuale.py`.
+* **05 Dicembre (Gio): Testing Algoritmico (Mock Data)**
+    * *Attività:* Verifica matematica algoritmo tramite script test isolato (senza DB).
+    * *File:* `test_manuale.py`.
 
 * **06 Dicembre (Ven): Implementazione Persistenza Dati**
-    * *Attività:* Configurazione ORM SQLAlchemy. Creazione tabelle `RisorsaDB`, `ProgettoDB` e mapping oggetti logici.
-    * *File lavorati:* `db_manager.py`, `instance/pianificatore.db`.
+    * *Attività:* Configurazione SQLAlchemy, creazione tabelle DB e metodi mapping oggetto-relazionale.
+    * *File:* `db_manager.py`.
 
 ### Settimana 4
 
 * **09 Dicembre (Lun): Setup Framework Web**
-    * *Attività:* Inizializzazione Flask. Creazione struttura base layout HTML e routing.
-    * *File lavorati:* `app.py`, `templates/base.html`.
+    * *Attività:* Inizializzazione Flask (`app.py`), routing base e layout `base.html`.
 
-* **10 Dicembre (Mar): Sviluppo Modulo Risorse**
-    * *Attività:* Implementazione CRUD Risorse e gestione Assenze. Visualizzazione barre di carico.
-    * *File lavorati:* `templates/risorse.html`, `templates/modifica_risorsa.html`.
+* **10 Dicembre (Mar): Modulo Gestione Risorse**
+    * *Attività:* CRUD Risorse, gestione Assenze e visualizzazione grafica barre di carico.
+    * *File:* `templates/risorse.html`.
 
-* **11 Dicembre (Mer): Sviluppo Modulo Progetti**
-    * *Attività:* Implementazione form di inserimento progetti con gestione dinamica percentuali skill.
-    * *File lavorati:* `templates/progetti.html`, `templates/modifica_progetto.html`.
+* **11 Dicembre (Mer): Modulo Gestione Progetti**
+    * *Attività:* Form inserimento progetti con validazione JS percentuali skill dinamiche.
+    * *File:* `templates/progetti.html`.
 
-* **12 Dicembre (Gio): Logica Dashboard e Stati**
-    * *Attività:* Implementazione aggiornamento automatico stati (Pianificato/In corso). Visualizzazione dettagli assegnazioni.
-    * *File lavorati:* `app.py`, `templates/progetti.html`.
+* **12 Dicembre (Gio): Dashboard e Stati Automatici**
+    * *Attività:* Logica aggiornamento stati (Pianificato → In Corso) e visualizzazione dettagli assegnazioni.
 
-* **13 Dicembre (Ven): Design UI e Styling**
-    * *Attività:* Miglioramento CSS (Card, Badge, Tabelle). Feedback utente (Flash messages).
-    * *File lavorati:* `static/style.css`.
+* **13 Dicembre (Ven): UI Design e Styling**
+    * *Attività:* Refactoring CSS (`style.css`), miglioramento UX (card, badge, messaggi errore).
 
 ### Settimana 5
 
-* **16 Dicembre (Lun): Integrazione Calendario Visuale**
-    * *Attività:* Integrazione FullCalendar.js e creazione API JSON per eventi.
-    * *File lavorati:* `templates/calendario.html`, `app.py`.
+* **16 Dicembre (Lun): Integrazione Calendario**
+    * *Attività:* Implementazione FullCalendar.js e API JSON eventi backend.
+    * *File:* `templates/calendario.html`.
 
-* **17 Dicembre (Mar): Gestione Festività e Orari Reali**
-    * *Attività:* Integrazione libreria `holidays`. Filtro giorni lavorativi nel motore di calcolo.
-    * *File lavorati:* `motore.py`, `app.py`.
+* **17 Dicembre (Mar): Logica Festività Italiana**
+    * *Attività:* Integrazione libreria `holidays`, filtro giorni lavorativi in `motore.py`.
 
-* **18 Dicembre (Mer): Finalizzazione e Documentazione Tecnica**
-    * *Attività:* Implementazione test unitari e di integrità.
-    * *File lavorati:* `test/`.
+# 📅 Agenda di Sviluppo: Pianificatore Risorse (WIP)
+
+**Stato Progetto:** 🚧 IN CORSO  
+**Ultimo aggiornamento:** 18 Dicembre 2025
+
+---
+
+## 📘 FASE 1: ANALISI, STUDIO E PROGETTAZIONE
+**Periodo:** 19 Novembre – 02 Dicembre  
+**Obiettivo:** Definizione modello matematico e requisiti (No Code).
+
+### Settimana 1
+
+* **19 Novembre (Mar): Analisi Preliminare e Concettualizzazione**
+    * *Attività:* Analisi del problema di allocazione risorse. Definizione dei pilastri del modello deterministico (priorità fissa, non riassegnazione).
+    * *Rif:* `[01] Idea di fondo.md`
+
+* **20 Novembre (Mer): Definizione Algoritmo Core**
+    * *Attività:* Studio della logica di assegnazione "Greedy" e criterio selezione risorse (disponibilità residua).
+    * *Rif:* `[02] Approfondimento su algoritmo di assegnazione ore.md`
+
+* **21 Novembre (Gio): Studio Margini di Sicurezza**
+    * *Attività:* Analisi rischio stime e introduzione teorica del buffer per mitigare falsi negativi.
+    * *Rif:* `[03] Sviluppo con introduzione di margine di sicurezza sulle stime.md`
+
+* **22 Novembre (Ven): Analisi Impatto sui Ruoli**
+    * *Attività:* Studio matematico sulla riduzione delle percentuali operative reali (Dev/Tester) a parità di ore contrattuali.
+    * *Rif:* `[04] Ripercussioni sulle percentuali di lavoro per ruolo.md`
+
+### Settimana 2
+
+* **25 Novembre (Lun): Definizione Vincoli Temporali**
+    * *Attività:* Formalizzazione regola 8h lavorative e invarianza orario contrattuale rispetto al margine.
+    * *Rif:* `[05] Ore lavorative.md`
+
+* **26 Novembre (Mar): Progettazione Architettura MVC**
+    * *Attività:* Scelta stack (Flask, SQLAlchemy) e bozza architettura tecnica.
+
+* **27 Novembre (Mer): Pianificazione Roadmap**
+    * *Attività:* Stesura fasi di sviluppo (Core > DB > Web > Advanced) e definizione funzionalità.
+    * *Rif:* `[06] Documentazione progetto.md`
+
+* **28 Novembre (Gio): Modellazione Database (ER)**
+    * *Attività:* Disegno schema relazioni (Risorse ↔ Assenze, Progetti).
+
+* **29 Novembre (Ven): Raffinamento Logiche Business**
+    * *Attività:* Analisi casi limite (load balancing, skill multiple).
+
+### Settimana 3 (Inizio)
+
+* **02 Dicembre (Lun): Revisione Documentale e Setup**
+    * *Attività:* Chiusura documenti analisi e preparazione ambiente Python (venv, git init).
+
+---
+
+## 💻 FASE 2: SVILUPPO SOFTWARE (Core & Web App)
+**Periodo:** 03 Dicembre – Oggi  
+**Obiettivo:** Implementazione Codice Python, Database e Interfaccia.
+
+### Settimana 3 (Continuazione)
+
+* **03 Dicembre (Mar): Implementazione Modelli Dati**
+    * *Attività:* Traduzione entità in classi Python (`Risorsa`, `Progetto`) e setup `config_modelli.py`.
+    * *Commit:* Core Logic & Algoritmo.
+
+* **04 Dicembre (Mer): Sviluppo Motore Allocazione**
+    * *Attività:* Scrittura logica `assegna_risorse`, ordinamento prioritario e calcolo fattore pianificazione.
+    * *File:* `motore.py`.
+
+* **05 Dicembre (Gio): Testing Algoritmico (Mock Data)**
+    * *Attività:* Verifica matematica algoritmo tramite script test isolato (senza DB).
+    * *File:* `test_manuale.py`.
+
+* **06 Dicembre (Ven): Implementazione Persistenza Dati**
+    * *Attività:* Configurazione SQLAlchemy, creazione tabelle DB e metodi mapping oggetto-relazionale.
+    * *File:* `db_manager.py`.
+
+### Settimana 4
+
+* **09 Dicembre (Lun): Setup Framework Web**
+    * *Attività:* Inizializzazione Flask (`app.py`), routing base e layout `base.html`.
+
+* **10 Dicembre (Mar): Modulo Gestione Risorse**
+    * *Attività:* CRUD Risorse, gestione Assenze e visualizzazione grafica barre di carico.
+    * *File:* `templates/risorse.html`.
+
+* **11 Dicembre (Mer): Modulo Gestione Progetti**
+    * *Attività:* Form inserimento progetti con validazione JS percentuali skill dinamiche.
+    * *File:* `templates/progetti.html`.
+
+* **12 Dicembre (Gio): Dashboard e Stati Automatici**
+    * *Attività:* Logica aggiornamento stati (Pianificato → In Corso) e visualizzazione dettagli assegnazioni.
+
+* **13 Dicembre (Ven): UI Design e Styling**
+    * *Attività:* Refactoring CSS (`style.css`), miglioramento UX (card, badge, messaggi errore).
+
+### Settimana 5
+
+* **16 Dicembre (Lun): Integrazione Calendario**
+    * *Attività:* Implementazione FullCalendar.js e API JSON eventi backend.
+    * *File:* `templates/calendario.html`.
+
+* **17 Dicembre (Mar): Logica Festività Italiana**
+    * *Attività:* Integrazione libreria `holidays`, filtro giorni lavorativi in `motore.py`.
+
+* **18 Dicembre (Mer - OGGI): Integrazione Logiche Temporali**
+    * *Attività:* Test e verifica calcolo ore nette su calendario reale. Aggiornamento documentazione tecnica.
+    * *Stato:* **Fase 3 Completata.**
+
+---
+
+## 🚀 PROSSIMI PASSI (Roadmap - Fase 4)
+*Attività previste (da confermare in base al repository):*
+
+* [ ] **Visualizzazione Gantt:** Diagramma temporale progetti.
+* [ ] **Simulazione What-If:** Creazione progetti "bozza" senza salvataggio.
+* [ ] **Export Dati:** Reportistica in PDF/Excel.
+* [ ] **Refactoring Skill:** Livelli competenza (Junior/Senior).
+
+*In attesa di istruzioni per le attività di domani (19 Dicembre)...*
+
+---
+
+## 🚀 PROSSIMI PASSI (Roadmap - Fase 4)
+*Attività previste (da confermare in base al repository):*
+
+* [ ] **Visualizzazione Gantt:** Diagramma temporale progetti.
+* [ ] **Simulazione What-If:** Creazione progetti "bozza" senza salvataggio.
+* [ ] **Export Dati:** Reportistica in PDF/Excel.
+* [ ] **Refactoring Skill:** Livelli competenza (Junior/Senior).
+
+*In attesa di istruzioni per le attività di domani (19 Dicembre)...*
