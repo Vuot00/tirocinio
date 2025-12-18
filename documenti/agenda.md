@@ -108,5 +108,5 @@
     * *File lavorati:* `motore.py`, `app.py`.
 
 * **18 Dicembre (Mer): Finalizzazione e Documentazione Tecnica**
-    * *Attività:* Stesura README, pulizia codice, verifica coerenza finale tra documenti e software.
-    * *File lavorati:* `README.md`, `.gitignore`.
+    * *Attività:* Implementazione test unitari e di integrità.
+    * *File lavorati:* `test/`.
