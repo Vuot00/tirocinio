@@ -1,0 +1,4 @@
+refractoring
+suddivisione in config service e app
+suddivisione in cartelle
+test unitari e di integrazione

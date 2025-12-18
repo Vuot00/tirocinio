@@ -169,7 +169,7 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
 ### 4. Utility (Comodità)
 
 - [ ] **📥 Export PDF/Excel**
-  - **Cosa:** Generare un report scaricabile da inviare al cliente o al team.
+  - **Cosa:** Generare un report scaricabile da inviare al cliente o al team. per giorno o per ruolo
   - **Implementazione:** Usando librerie Python come `pandas` o `openpyxl`.
 
 - [ ] **🔄 Drag & Drop Priorità**
