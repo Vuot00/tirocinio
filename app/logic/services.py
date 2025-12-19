@@ -1,9 +1,8 @@
 # app/logic/services.py
 from datetime import date, timedelta
-from flask import url_for
 import holidays
 from app.models import db, RisorsaDB, ProgettoDB, AssenzaDB
-from app.logic import engine # Importiamo il motore appena spostato
+from app.logic import engine 
 
 class ServiceProgetti:
     @staticmethod

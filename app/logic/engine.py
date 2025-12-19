@@ -1,11 +1,8 @@
-from app.models.entities import Progetto, Risorsa
-from datetime import datetime, date, timedelta
+from datetime import timedelta
 import holidays
 
 TOLLERANZA_ERRORE_FLOAT = 0.5
 MIN_ORE_ASSEGNABILI = 0.1
-
-# Inizializziamo il calendario italiano (include Pasquetta, Natale, ecc.)
 it_holidays = holidays.IT()
 
 # --- NUOVE FUNZIONI PER GESTIONE DATE E FESTIVITÀ ---

@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from .entities import Risorsa, Progetto
-from datetime import date
 
 db = SQLAlchemy()
 
