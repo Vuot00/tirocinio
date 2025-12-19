@@ -112,21 +112,7 @@
 ## 🚀 PROSSIMI PASSI (Roadmap - Fase 4)
 *Attività previste (da confermare in base al repository):*
 
-* [ ] **Visualizzazione Gantt:** Diagramma temporale progetti.
+* [ ] **Calendario:** Possibilità di visualizzare in formato mese, trimestre, ecc..
 * [ ] **Simulazione What-If:** Creazione progetti "bozza" senza salvataggio.
-* [ ] **Export Dati:** Reportistica in PDF/Excel.
-* [ ] **Refactoring Skill:** Livelli competenza (Junior/Senior).
+* [ ] **Export Dati:** Reportistica in PDF/Excel. (per giorni o per ruolo)
 
-*In attesa di istruzioni per le attività di domani (19 Dicembre)...*
-
----
-
-## 🚀 PROSSIMI PASSI (Roadmap - Fase 4)
-*Attività previste (da confermare in base al repository):*
-
-* [ ] **Visualizzazione Gantt:** Diagramma temporale progetti.
-* [ ] **Simulazione What-If:** Creazione progetti "bozza" senza salvataggio.
-* [ ] **Export Dati:** Reportistica in PDF/Excel.
-* [ ] **Refactoring Skill:** Livelli competenza (Junior/Senior).
-
-*In attesa di istruzioni per le attività di domani (19 Dicembre)...*
