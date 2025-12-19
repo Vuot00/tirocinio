@@ -1,4 +1,4 @@
-# 📘 Progetto: Sistema di Allocazione Deterministica Risorse (v2.0 Web)
+# 📘 Progetto: Sistema di Allocazione Deterministica Risorse (v2.5 Refactored)
 
 ## 1. Scopo del Progetto
 Costruire un sistema di pianificazione delle risorse che sia **stabile, deterministico e accessibile via Web**.
@@ -47,34 +47,44 @@ Se il progetto richiede 50 ore, il sistema occupa 50 ore "reali" del progetto, m
 
 ---
 
-## 4. Architettura Tecnica (Web App Flask)
+## 4. Architettura Tecnica (Refactoring MVC)
 
-Il progetto è evoluto da script CLI a **Web Application MVC**.
+Il progetto è evoluto in una architettura professionale modulare basata su **Blueprint** e **Application Factory Pattern**.
 
-### 📂 Struttura File
+### 📂 Nuova Struttura File
 ```text
-📁 pianificatore_progetti/
+📁 TIROCINIO/
 │
-├── 📄 app.py            # (CONTROLLER) Server Flask. Gestisce rotte, input utenti e coordinamento.
-├── 📄 db_manager.py     # (DATABASE LAYER) Gestisce tabelle SQLite (SQLAlchemy) e traduzione dati.
-├── 📄 modelli.py        # (PURE LOGIC) Classi Risorsa/Progetto usate per il calcolo in memoria.
-├── 📄 motore.py         # (ALGORITHM) Il cuore del calcolo. Contiene la logica di assegnazione.
+├── 📄 run.py              # (ENTRY POINT) Avvia il server Flask.
+├── 📄 config.py           # (CONFIG) Impostazioni ambiente e DB.
 │
-├── 📁 templates/        # (VIEWS) Pagine HTML
-│   ├── index.html              # Dashboard principale (Input + Tabelle).
-│   ├── risultato.html          # Report pianificazione.
-│   ├── modifica_progetto.html  # Pagina edit progetti.
-│   └── modifica_risorsa.html   # Pagina edit risorse e assenze.
+├── 📁 app/                # (PACKAGE PRINCIPALE)
+│   ├── 📄 __init__.py     # Application Factory.
+│   ├── 📄 config_modelli.py
+│   │
+│   ├── 📁 logic/          # (BUSINESS LOGIC LAYER)
+│   │   ├── 📄 engine.py   # Ex motore.py. Cuore del calcolo allocazione.
+│   │   └── 📄 services.py # Logica di coordinamento e servizi (es. Calendario).
+│   │
+│   ├── 📁 models/         # (DATA LAYER)
+│   │   ├── 📄 database.py # Inizializzazione SQLAlchemy.
+│   │   └── 📄 entities.py # Ex modelli.py. Classi pure e tabelle DB.
+│   │
+│   ├── 📁 routes/         # (CONTROLLERS) Gestione rotte web tramite Blueprints.
+│   │   ├── 📄 main.py     # Home, API e Calendario.
+│   │   ├── 📄 progetti.py # CRUD Progetti.
+│   │   └── 📄 risorse.py  # CRUD Risorse e Assenze.
+│   │
+│   └── 📁 templates/      # (VIEWS) Pagine HTML.
 │
-└── 📁 static/
-    └── style.css        # Fogli di stile CSS.
-```
+├── 📁 instance/           # Contiene il database SQLite fisico.
+└── 📁 test/               # Suite di test automatici (Pytest).
 
 # 🗺️ Roadmap di Sviluppo
 
-Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**, dallo script iniziale alla Web App completa.
+Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**, dallo script iniziale alla Web App completa e strutturata.
 
-## ✅ Fase 1: Core Logic & Algoritmo (`modelli.py`, `motore.py`)
+## ✅ Fase 1: Core Logic & Algoritmo
 *Obiettivo: Costruire il motore decisionale stabile e deterministico.*
 
 - [x] **Modellazione Dati**
@@ -91,7 +101,7 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
 
 ---
 
-## ✅ Fase 2: Database & Persistenza (`db_manager.py`)
+## ✅ Fase 2: Database & Persistenza
 *Obiettivo: Salvare i dati in modo permanente su file.*
 
 - [x] **Setup Database**
@@ -106,23 +116,43 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
 
 ---
 
-## ✅ Fase 3: Web Application (`app.py`, Templates)
+## ✅ Fase 3: Web Application & UI
 *Obiettivo: Interfaccia utente completa per la gestione quotidiana.*
 
-- [x] **Dashboard (`index.html`)**
-    - [x] Form inserimento Risorse.
-    - [x] Form inserimento Assenze (collegato alla risorsa).
+- [x] **Dashboard Progetti**
     - [x] Form inserimento Progetti (con gestione quantità e percentuali).
     - [x] **Validazione JS**: Controllo somma percentuali = 100%.
-    - [x] Visualizzazione code: Ordinamento decrescente (ultimi inseriti in alto).
+    - [x] Visualizzazione code: Ordinamento e indicatori di stato (Fattibile/Rischio).
+- [x] **Gestione Risorse**
+    - [x] Dashboard stato risorse (Carico, Residuo, Ferie).
+    - [x] Registrazione Assenze.
 - [x] **Gestione CRUD (Modifica/Elimina)**
-    - [x] Pagina `modifica_progetto.html` (precompilazione dati esistenti).
-    - [x] Pagina `modifica_risorsa.html` (gestione anagrafica e storico assenze).
+    - [x] Modifica Progetti e Risorse.
     - [x] Eliminazione singole assenze, risorse e progetti.
-- [x] **Reportistica (`risultato.html`)**
+- [x] **Reportistica**
     - [x] Visualizzazione esito (Fattibile ✅ / Non Fattibile ⛔).
-    - [x] Visualizzazione barre di carico per ogni risorsa.
-    - [x] Dettaglio ore assegnate per progetto.
+    - [x] Visualizzazione barre di carico per ogni risorsa dentro il progetto.
+
+---
+
+## ✅ Fase 4: Refactoring, Testing & Calendario
+*Obiettivo: Professionalizzazione del codice e strumenti visivi.*
+
+- [x] **Architecture Refactoring**
+    - [x] Passaggio a struttura MVC modulare (Cartelle `logic`, `models`, `routes`).
+    - [x] Implementazione **Application Factory** (`create_app`) e **Blueprints**.
+    - [x] Pulizia della root directory e organizzazione file (`run.py`, `config.py`).
+- [x] **Quality Assurance (Testing)**
+    - [x] Setup ambiente **Pytest**.
+    - [x] Test Unitari (Logica pura).
+    - [x] Test Database (Integrità salvataggio).
+    - [x] Test Rotte Web (Simulazione client).
+- [x] **📅 Calendario Visivo (FullCalendar)**
+    - [x] Visualizzazione timeline dei progetti (Start -> End).
+    - [x] Color coding dinamico in base allo stato (Pianificato, In Svolgimento, Sospeso).
+- [x] **🏖️ Festività Nazionali**
+    - [x] Integrazione libreria `holidays` per calcolo automatico giorni festivi italiani.
+    - [x] Visualizzazione festività nel calendario.
 
 ---
 
