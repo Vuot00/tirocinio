@@ -80,6 +80,8 @@ Il progetto è evoluto in una architettura professionale modulare basata su **Bl
 ├── 📁 instance/           # Contiene il database SQLite fisico.
 └── 📁 test/               # Suite di test automatici (Pytest).
 
+```
+
 # 🗺️ Roadmap di Sviluppo
 
 Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**, dallo script iniziale alla Web App completa e strutturata.
