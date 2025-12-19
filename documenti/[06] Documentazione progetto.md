@@ -127,50 +127,9 @@ Questa roadmap traccia l'evoluzione del **Pianificatore Risorse Deterministico**
 ---
 
 ## 🔜 Fase 4: Futuri Miglioramenti 
-*Idee per le prossime versioni del software.*
+*Attività previste (da confermare in base al repository):*
 
-### 1. Visualizzazione e Controllo (L'occhio vuole la sua parte)
-*Attualmente hai liste e tabelle. Per un Project Manager, la visione temporale è fondamentale.*
+* [ ] **Calendario:** Possibilità di visualizzare in formato mese, trimestre, ecc..
+* [ ] **Simulazione What-If:** Creazione progetti "bozza" senza salvataggio.
+* [ ] **Export Dati:** Reportistica in PDF/Excel. (per giorni o per ruolo)
 
-- [ ] **📊 Diagramma di Gantt**
-  - **Cosa:** Visualizzare i progetti su una linea temporale orizzontale.
-  - **Perché:** Per vedere a colpo d'occhio le sovrapposizioni tra progetti.
-  - **Come:** Usare librerie JS come *Google Charts Gantt* o *Mermaid.js*.
-
-- [ ] **📅 Calendario Assenze e Scadenze (Integrazione FullCalendar)**
-  - **Cosa:** Unire il codice del calendario per mostrare visivamente le ferie delle risorse e le scadenze dei progetti.
-  - **Perché:** Capire al volo perché un progetto è "Non Fattibile" (es. *"Ah, vedi! Mario è in ferie proprio quella settimana"*).
-
----
-
-### 2. Logica di Business (Rendere l'algoritmo più "umano")
-*Il tuo algoritmo è matematico. Il mondo reale è sfumato.*
-
-- [ ] **⭐ Livelli di Skill (Junior / Senior)**
-  - **Cosa:** Non tutti i "Developer" sono uguali. Aggiungi un livello (es. 1-5 o Junior/Senior) alla risorsa e un "requisito minimo" al progetto.
-  - **Perché:** Evita di assegnare un progetto architettonico complesso a un junior appena assunto.
-
-- [x] **🏖️ Festività Nazionali (Global Holidays)**
-  - **Cosa:** Aggiungi una tabella "Giorni Festivi" (es. Natale, Ferragosto) che valgono per tutti, integrando librerie come `holidays`.
-  - **Perché:** Risparmi tempo (non devi inserire le feste comandate a mano per ogni dipendente) e rendi il calcolo più preciso.
-
----
-
-### 3. Analisi e Simulazione (Il vero valore aggiunto)
-*Qui è dove il software diventa un "consigliere".*
-
-- [ ] **🧪 Modalità "What-If" (Simulazione)**
-  - **Cosa:** Poter creare progetti "Bozza" che non vengono salvati definitivamente.
-  - **Perché:** Serve per vedere: *"Se accettassi questa commessa, ce la faremmo?"* senza sporcare il database reale.
-
-
----
-
-### 4. Utility (Comodità)
-
-- [ ] **📥 Export PDF/Excel**
-  - **Cosa:** Generare un report scaricabile da inviare al cliente o al team. per giorno o per ruolo
-  - **Implementazione:** Usando librerie Python come `pandas` o `openpyxl`.
-
-- [ ] **🔄 Drag & Drop Priorità**
-  - **Cosa:** Nella dashboard, trascinare i progetti su e giù per riordinarli invece di cambiare il numero manuale.
