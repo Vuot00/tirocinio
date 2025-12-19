@@ -1,4 +1,4 @@
-from modelli import Risorsa, Progetto
+from app.models.entities import Progetto, Risorsa
 from datetime import datetime, date, timedelta
 import holidays
 
