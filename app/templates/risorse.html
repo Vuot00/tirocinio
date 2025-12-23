@@ -1,59 +1,126 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="display: flex; gap: 30px;">
+<style>
+    /* Stili Form Coerenti */
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* Tabella Risorse */
+    .table-styled {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .table-styled th {
+        background: #2c3e50;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 500;
+    }
+    .table-styled td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        color: #555;
+    }
+    .table-styled tr:last-child td { border-bottom: none; }
+    .table-styled tr:hover { background-color: #f9f9f9; }
+</style>
+
+<div style="display: flex; gap: 30px; align-items: flex-start;">
     
-    <div class="col-input" style="flex: 1;">
-        <div class="card">
-            <h2>Aggiungi Risorsa</h2>
-            <form action="/aggiungi_risorsa" method="POST">
-                <input type="text" name="nome" placeholder="Nome" required>
-                <select name="skill">
-                    <option value="Developer">Developer</option>
-                    <option value="Tester">Tester</option>
-                    <option value="PM">Project Manager</option>
-                </select>
-                <input type="number" name="ore" placeholder="Ore Totali" required>
-                <button type="submit">Salva Risorsa</button>
-            </form>
+    <div class="col-input" style="flex: 1; max-width: 400px; display: flex; flex-direction: column; gap: 20px;">
+        
+        <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="background-color: #2c3e50; padding: 15px; color: white; display: flex; align-items: center; gap: 10px;">
+                <div style="font-size: 1.5rem;">👤</div>
+                <h3 style="margin: 0; font-size: 1.2rem;">Aggiungi Risorsa</h3>
+            </div>
+            <div style="padding: 20px;">
+                <form action="/aggiungi_risorsa" method="POST">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Nome</label>
+                    <input type="text" name="nome" placeholder="Es. Mario Rossi" class="form-control" required>
+                    
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Ruolo</label>
+                    <select name="skill" class="form-control">
+                        <option value="Developer">💻 Developer</option>
+                        <option value="Tester">🧪 Tester</option>
+                        <option value="PM">📊 Project Manager</option>
+                    </select>
+                    
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Ore Totali</label>
+                    <input type="number" name="ore" placeholder="Es. 160" class="form-control" required>
+                    
+                    <button type="submit" class="btn-submit" style="background-color: #2c3e50;">Salva Risorsa</button>
+                </form>
+            </div>
         </div>
 
-        <div class="card" style="border-left: 5px solid #f39c12;">
-            <h2>Registra Assenza 🏖️</h2>
-            <form action="/aggiungi_assenza" method="POST">
-                <select name="risorsa_id" required>
-                    {% for r in risorse %}
-                    <option value="{{ r.id }}">{{ r.nome }} ({{ r.skill }})</option>
-                    {% endfor %}
-                </select>
-                
-                <div class="row">
-                    <div style="flex:1">
-                        <label>Dal</label>
-                        <input type="date" name="inizio" required>
+        <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="background-color: #e67e22; padding: 15px; color: white; display: flex; align-items: center; gap: 10px;">
+                <div style="font-size: 1.5rem;">🏖️</div>
+                <h3 style="margin: 0; font-size: 1.2rem;">Registra Assenza</h3>
+            </div>
+            <div style="padding: 20px;">
+                <form action="/aggiungi_assenza" method="POST">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Chi?</label>
+                    <select name="risorsa_id" class="form-control" required>
+                        {% for r in risorse %}
+                        <option value="{{ r.id }}">{{ r.nome }} ({{ r.skill }})</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <div class="row" style="gap: 10px; margin-bottom: 0;">
+                        <div style="flex:1">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555; font-size:0.9rem;">Dal</label>
+                            <input type="date" name="inizio" class="form-control" required>
+                        </div>
+                        <div style="flex:1">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555; font-size:0.9rem;">Al</label>
+                            <input type="date" name="fine" class="form-control" required>
+                        </div>
                     </div>
-                    <div style="flex:1">
-                        <label>Al</label>
-                        <input type="date" name="fine" required>
-                    </div>
-                </div>
 
-                <input type="text" name="motivo" placeholder="Motivo (es. Ferie Estive)" required>
-                
-                <button type="submit" style="background-color: #f39c12;">Salva Assenza</button>
-            </form>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Motivo</label>
+                    <input type="text" name="motivo" placeholder="Es. Ferie Estive" class="form-control" required>
+                    
+                    <button type="submit" class="btn-submit" style="background-color: #d35400;">Salva Assenza</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <div class="col-data" style="flex: 2;">
-        <h2>Stato Risorse </h2>
-        <table style="font-size: 0.95rem;">
+        <h2 style="color: #2c3e50; margin-top: 0; margin-bottom: 20px;">📊 Stato e Carico Risorse</h2>
+        
+        <table class="table-styled">
             <thead>
                 <tr>
                     <th style="width:25%">Risorsa</th>
                     <th style="width:55%">Carico di Lavoro (Progetti + Assenze)</th>
                     <th style="width:15%">Residuo</th>
-                    <th style="width:5%"></th>
+                    <th style="width:5%; text-align:center;">Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,40 +136,42 @@
                     
                 <tr>
                     <td>
-                        <strong>{{ r.nome }}</strong><br>
-                        <span class="badge">{{ r.skill }}</span>
+                        <strong style="color: #2c3e50; font-size: 1.05rem;">{{ r.nome }}</strong><br>
+                        <span class="badge" style="background: #ecf0f1; color: #7f8c8d; border: 1px solid #bdc3c7; font-weight: 500;">{{ r.skill }}</span>
                     </td>
                     <td>
-                        <div style="display:flex; height:20px; width:100%; background:#ecf0f1; border-radius:4px; overflow:hidden; margin-bottom:5px;">
+                        <div style="display:flex; height:24px; width:100%; background:#ecf0f1; border-radius:4px; overflow:hidden; margin-bottom:5px; border: 1px solid #e0e0e0;">
                             
                             {% if perc_prog > 0 %}
-                            <div style="width:{{perc_prog}}%; background:#3498db; color:white; font-size:0.7rem; text-align:center; display:flex; align-items:center; justify-content:center;" title="Progetti: {{impegnate}}h">
+                            <div style="width:{{perc_prog}}%; background:#3498db; color:white; font-size:0.75rem; text-align:center; display:flex; align-items:center; justify-content:center; white-space: nowrap; overflow: hidden;" title="Progetti: {{impegnate}}h">
                                 {{ impegnate|round(0)|int }}h
                             </div>
                             {% endif %}
                             
                             {% if perc_ass > 0 %}
-                            <div style="width:{{perc_ass}}%; background:#f39c12; color:white; font-size:0.7rem; text-align:center; display:flex; align-items:center; justify-content:center;" title="Assenze: {{assenze}}h">
+                            <div style="width:{{perc_ass}}%; background:#f39c12; color:white; font-size:0.75rem; text-align:center; display:flex; align-items:center; justify-content:center;" title="Assenze: {{assenze}}h">
                                 🏖️
                             </div>
                             {% endif %}
                         </div>
                         
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#666;">
-                            <span>Contrattuali: {{ totale }}h</span>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#7f8c8d;">
+                            <span>Contrattuali: <strong>{{ totale }}h</strong></span>
                             {% if assenze > 0 %}
                                 <span style="color:#e67e22;">Ferie: -{{ assenze }}h</span>
                             {% endif %}
                         </div>
                     </td>
                     <td style="vertical-align: middle;">
-                        <strong style="color: {{ '#27ae60' if libere > 0 else '#c0392b' }}; font-size:1.1rem;">
+                        <strong style="color: {{ '#27ae60' if libere > 0 else '#c0392b' }}; font-size:1.2rem;">
                             {{ libere | round(1) }}h
                         </strong>
                         <br><small style="color:#999">Libere</small>
                     </td>
-                    <td style="vertical-align: middle;">
-                        <a href="/modifica_risorsa/{{ r.id }}" style="text-decoration:none; font-size:1.2rem;">✏️</a>
+                    <td style="vertical-align: middle; text-align: center;">
+                        <a href="/modifica_risorsa/{{ r.id }}" style="text-decoration:none; font-size:1.2rem; padding: 5px; border-radius: 50%; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='transparent'">
+                            ✏️
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

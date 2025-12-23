@@ -2,122 +2,123 @@
 
 {% block content %}
 <style>
-    /* Stili Accordion */
+    /* Stili Accordion Moderni */
     details {
-        border: 1px solid #ddd;
+        border: 1px solid #eee;
         border-radius: 8px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         background: white;
         overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
     }
-
     summary {
-        padding: 15px;
+        padding: 15px 20px;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
         background: #fff;
         list-style: none;
+        position: relative;
     }
-
-    summary::-webkit-details-marker {
-        display: none;
-    }
-
-    details[open] summary {
-        border-bottom: 1px solid #eee;
-        background-color: #f9f9f9;
-    }
-
-    .status-indicator {
-        height: 100%;
-        width: 5px;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-
-    .details-content {
-        padding: 20px;
-        background: #fafafa;
-    }
-
-    .res-bar-bg {
-        background: #e0e0e0;
-        height: 8px;
-        border-radius: 4px;
-        width: 100%;
-        margin-top: 5px;
-    }
-
-    .res-bar-fill {
-        height: 100%;
-        border-radius: 4px;
-        background: #3498db;
-    }
+    summary:hover { background-color: #f8f9fa; }
+    summary::-webkit-details-marker { display: none; }
+    details[open] summary { border-bottom: 1px solid #eee; background-color: #f8f9fa; }
+    .status-indicator { height: 100%; width: 6px; position: absolute; left: 0; top: 0; }
+    .details-content { padding: 25px; background: #fafafa; border-top: 1px solid #f0f0f0; }
+    .res-bar-bg { background: #e9ecef; height: 8px; border-radius: 4px; width: 100%; margin-top: 6px; overflow: hidden; }
+    .res-bar-fill { height: 100%; border-radius: 4px; background: #3498db; transition: width 0.5s ease; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; box-sizing: border-box; }
+    .form-label { font-weight: bold; color: #555; font-size: 0.9rem; margin-bottom: 5px; display: block; }
 </style>
 
-<div style="display: flex; gap: 30px;">
+<div style="display: flex; gap: 30px; align-items: flex-start;">
 
-    <div class="col-input" style="flex: 1; max-width: 400px;">
-        <div class="card">
-            <h2>Nuovo Progetto</h2>
-            <div style="background: #e8f6f3; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-                <label>💡 Usa Template:</label>
-                <select id="templateSelect" onchange="applicaTemplate()" style="width:100%">
-                    <option value="">-- Seleziona --</option>
-                    {% for nome, dati in best_practices.items() %}
-                    <option value='{{ dati|tojson }}'>{{ nome }}</option>
-                    {% endfor %}
-                </select>
+    <div class="col-input" style="flex: 1; max-width: 400px; position: sticky; top: 20px;">
+        <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            
+            <div style="background-color: #2c3e50; padding: 15px; color: white; display: flex; align-items: center; gap: 10px;">
+                <div style="font-size: 1.5rem;">📝</div>
+                <h3 style="margin: 0; font-size: 1.2rem;">Nuovo Progetto</h3>
             </div>
 
-            <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
-                <input type="text" name="nome" placeholder="Nome Progetto" required>
-                <div class="row">
-                    <div style="flex:1"><label>Prio</label> <input type="number" name="priorita" value="1" min="1"
-                            max="5"></div>
-                    <div style="flex:1"><label>Margine %</label> <input type="number" name="margine" value="5"></div>
+            <div style="padding: 20px;">
+                <div style="background: #e8f6f3; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #d1f2eb;">
+                    <label class="form-label" style="color: #16a085;">💡 Usa un Template veloce:</label>
+                    <select id="templateSelect" onchange="applicaTemplate()" class="form-control" style="margin-bottom: 0; border-color: #16a085;">
+                        <option value="">-- Seleziona --</option>
+                        {% for nome, dati in best_practices.items() %}
+                        <option value='{{ dati|tojson }}'>{{ nome }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="row">
-                    <div style="flex:1"><label>Inizio</label> <input type="date" name="data_inizio" required
-                            min="{{ today }}"></div>
-                    <div style="flex:1"><label>Fine</label> <input type="date" name="data" required min="{{ today }}">
+
+                <form action="/aggiungi_progetto" method="POST" onsubmit="return validaPercentuali()">
+                    <label class="form-label">Nome Progetto</label>
+                    <input type="text" name="nome" placeholder="Es. Rifacimento Sito Web" class="form-control" required>
+                    
+                    <div class="row" style="gap: 10px;">
+                        <div style="flex:1">
+                            <label class="form-label">Priorità (1-5)</label> 
+                            <input type="number" name="priorita" value="1" min="1" max="5" class="form-control">
+                        </div>
+                        <div style="flex:1">
+                            <label class="form-label">Margine %</label> 
+                            <input type="number" name="margine" value="5" class="form-control">
+                        </div>
                     </div>
-                </div>
-                <input type="number" name="ore" placeholder="Ore Totali" required>
+                    
+                    <div class="row" style="gap: 10px;">
+                        <div style="flex:1">
+                            <label class="form-label">Inizio</label> 
+                            <input type="date" name="data_inizio" class="form-control" required min="{{ today }}">
+                        </div>
+                        <div style="flex:1">
+                            <label class="form-label">Consegna</label> 
+                            <input type="date" name="data" class="form-control" required min="{{ today }}">
+                        </div>
+                    </div>
+                    
+                    <label class="form-label">Ore Totali Stimate</label>
+                    <input type="number" name="ore" placeholder="Es. 100" class="form-control" required style="font-size: 1.1rem;">
 
-                <h4>Ruoli (N° / %)</h4>
-                <div class="row">
-                    <label style="flex:1">Dev:</label>
-                    <input type="number" name="qty_dev" value="0" min="0" style="flex:1">
-                    <input type="number" name="pct_dev" id="pct_dev" value="0" style="flex:1" placeholder="%">
-                </div>
-                <div class="row">
-                    <label style="flex:1">Test:</label>
-                    <input type="number" name="qty_tester" value="0" min="0" style="flex:1">
-                    <input type="number" name="pct_tester" id="pct_tester" value="0" style="flex:1" placeholder="%">
-                </div>
-                <div class="row">
-                    <label style="flex:1">PM:</label>
-                    <input type="number" name="qty_pm" value="0" min="0" style="flex:1">
-                    <input type="number" name="pct_pm" id="pct_pm" value="0" style="flex:1" placeholder="%">
-                </div>
+                    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 1rem; color: #2c3e50;">👥 Composizione Team</h4>
+                        
+                        <div class="row" style="gap: 5px; align-items: center; margin-bottom: 5px;">
+                            <label style="flex:1; font-weight:bold; font-size:0.9rem;">💻 Dev:</label>
+                            <input type="number" name="qty_dev" value="0" min="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="Qtà">
+                            <input type="number" name="pct_dev" id="pct_dev" value="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="%">
+                        </div>
+                        <div class="row" style="gap: 5px; align-items: center; margin-bottom: 5px;">
+                            <label style="flex:1; font-weight:bold; font-size:0.9rem;">🧪 Test:</label>
+                            <input type="number" name="qty_tester" value="0" min="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="Qtà">
+                            <input type="number" name="pct_tester" id="pct_tester" value="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="%">
+                        </div>
+                        <div class="row" style="gap: 5px; align-items: center;">
+                            <label style="flex:1; font-weight:bold; font-size:0.9rem;">📊 PM:</label>
+                            <input type="number" name="qty_pm" value="0" min="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="Qtà">
+                            <input type="number" name="pct_pm" id="pct_pm" value="0" style="flex:1" class="form-control" style="margin-bottom:0;" placeholder="%">
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn-progetto" style="margin-top:15px">Crea Progetto</button>
-            </form>
+                    <button type="submit" class="btn-progetto" style="margin-top:20px; width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                        Crea Progetto
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <div class="col-data" style="flex: 2;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h2>Dashboard Progetti</h2>
-            <form action="/progetti" method="GET">
-                <select name="sort" onchange="this.form.submit()">
-                    <option value="recenti">🆕 Recenti</option>
-                    <option value="priorita" {% if current_sort=='priorita' %}selected{% endif %}>🔥 Priorità</option>
-                    <option value="scadenza" {% if current_sort=='scadenza' %}selected{% endif %}>📅 Scadenza</option>
+            <h2 style="color: #2c3e50; margin: 0;">📊 Dashboard Progetti</h2>
+            <form action="/progetti" method="GET" style="margin:0;">
+                <select name="sort" onchange="this.form.submit()" style="padding: 8px; border-radius: 4px; border: 1px solid #bdc3c7;">
+                    <option value="recenti">🆕 Più Recenti</option>
+                    <option value="priorita" {% if current_sort=='priorita' %}selected{% endif %}>🔥 Priorità Alta</option>
+                    <option value="scadenza" {% if current_sort=='scadenza' %}selected{% endif %}>📅 Scadenza Vicina</option>
                 </select>
             </form>
         </div>
@@ -125,137 +126,84 @@
         {% for p in progetti %}
         {% set border_color = '#7f8c8d' %}
         {% if p.stato_db == 'In svolgimento' %}
-        {% set border_color = '#27ae60' if p.fattibile else '#c0392b' %}
-        {# Se è fattibile MA rischioso (warning), usiamo Arancione #}
-        {% if p.fattibile and p.warning_messaggio %}
-        {% set border_color = '#f39c12' %}
-        {% endif %}
+            {% set border_color = '#27ae60' if p.fattibile else '#c0392b' %}
+            {% if p.fattibile and p.warning_messaggio %} {% set border_color = '#f39c12' %} {% endif %}
         {% elif p.stato_db == 'Pianificato' %}
-        {% set border_color = '#9b59b6' if p.fattibile else '#c0392b' %}
+            {% set border_color = '#9b59b6' if p.fattibile else '#c0392b' %}
         {% elif p.stato_db == 'Sospeso' %}
-        {% set border_color = '#f39c12' %}
+            {% set border_color = '#f39c12' %}
         {% endif %}
 
         <details style="position: relative;">
             <div class="status-indicator" style="background-color: {{ border_color }};"></div>
-
             <summary>
                 <div style="display: flex; flex-direction: column; gap: 5px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <strong style="font-size: 1.1rem;">{{ p.nome }}</strong>
-
+                        <strong style="font-size: 1.1rem; color: #2c3e50;">{{ p.nome }}</strong>
                         {% if p.stato_db == 'In svolgimento' %}
-                        {% if p.fattibile %}
-                        <span class="badge" style="background:#27ae60; color:white;">IN CORSO</span>
-                        {% else %}
-                        <span class="badge" style="background:#c0392b; color:white;">BLOCCATO</span>
-                        {% endif %}
-                        {% elif p.stato_db == 'Pianificato' %}
-                        <span class="badge" style="background:#9b59b6; color:white;">PIANIFICATO</span>
-                        {% elif p.stato_db == 'Sospeso' %}
-                        <span class="badge" style="background:#f39c12; color:white;">SOSPESO</span>
-                        {% else %}
-                        <span class="badge" style="background:#7f8c8d; color:white;">CONCLUSO</span>
-                        {% endif %}
+                            {% if p.fattibile %} <span class="badge" style="background:#27ae60; color:white;">IN CORSO</span>
+                            {% else %} <span class="badge" style="background:#c0392b; color:white;">BLOCCATO</span> {% endif %}
+                        {% elif p.stato_db == 'Pianificato' %} <span class="badge" style="background:#9b59b6; color:white;">PIANIFICATO</span>
+                        {% elif p.stato_db == 'Sospeso' %} <span class="badge" style="background:#f39c12; color:white;">SOSPESO</span>
+                        {% else %} <span class="badge" style="background:#7f8c8d; color:white;">CONCLUSO</span> {% endif %}
                     </div>
-
-                    <div style="font-size: 0.85rem; color: #666;">
-                        <span style="background: #eee; padding: 2px 6px; border-radius: 4px;">P{{ p.priorita }}</span>
-                        {{ p.data_inizio.strftime('%d/%m') }} ➝ {{ p.data_consegna.strftime('%d/%m/%Y') }}
-
+                    <div style="font-size: 0.85rem; color: #666; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: #eef2f3; color: #2c3e50; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid #dce4e6;">P{{ p.priorita }}</span>
+                        <span>🗓️ {{ p.data_inizio.strftime('%d/%m') }} ➝ {{ p.data_consegna.strftime('%d/%m/%Y') }}</span>
                         {% if p.stato_db in ['In svolgimento', 'Pianificato'] %}
-                        {% if p.fattibile %}
-                        <span style="color: #27ae60; font-weight: bold; margin-left: 10px;">✅ FATTIBILE</span>
-
-                        {% if p.warning_messaggio %}
-                        <span
-                            style="color: #e67e22; font-weight: bold; margin-left: 10px; background: #fff3cd; padding: 2px 5px; border-radius: 4px; border: 1px solid #e67e22;">
-                            ⚠️ RISCHIO TEMPI
-                        </span>
-                        {% endif %}
-
-                        {% else %}
-                        <span style="color: #c0392b; font-weight: bold; margin-left: 10px;">
-                            {{ p.note_errore if p.note_errore else "⛔ CARENZA RISORSE" }}
-                        </span>
-                        {% endif %}
+                            {% if p.fattibile %}
+                                <span style="color: #27ae60; font-weight: bold; margin-left: 5px;">✅ FATTIBILE</span>
+                                {% if p.warning_messaggio %} <span style="background: #fff3cd; color: #e67e22; padding: 1px 6px; border-radius: 4px;">⚠️ RISCHIO</span> {% endif %}
+                            {% else %}
+                                <span style="color: #c0392b; font-weight: bold; margin-left: 5px;">⛔ {{ p.note_errore if p.note_errore else "NO RISORSE" }}</span>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
-
-                <span style="font-size: 1.2rem;">🔽</span>
+                <span style="font-size: 1.2rem; color: #bdc3c7;">🔽</span>
             </summary>
 
             <div class="details-content">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                    <div>
-                        <strong>Totale Ore:</strong> {{ p.ore_totali_richieste }}h (Margine: {{ p.margine_percentuale
-                        }}%)
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div style="color: #2c3e50;">
+                        <strong>Totale Ore:</strong> {{ p.ore_totali_richieste }}h 
+                        <span style="color: #7f8c8d; font-size: 0.9rem;">(Margine: {{ p.margine_percentuale }}%)</span>
                     </div>
                     <div>
-                        <a href="/modifica_progetto/{{ p.id }}" style="text-decoration:none; margin-right:10px;">✏️
-                            Modifica</a>
-
-                        {% if p.stato_db == 'Sospeso' %}
-                        <a href="/cambia_stato/{{ p.id }}/In svolgimento"
-                            style="text-decoration:none; color:#27ae60;">▶️ Riattiva</a>
-
-                        {% elif p.stato_db != 'Concluso' %}
-                        <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12;">⏸️
-                            Sospendi</a>
-
+                        <a href="/modifica_progetto/{{ p.id }}" class="btn-action" style="text-decoration:none; margin-right:15px; color: #3498db; font-weight: 500;">✏️ Modifica</a>
+                        {% if p.stato_db == 'Sospeso' %} <a href="/cambia_stato/{{ p.id }}/In svolgimento" style="text-decoration:none; color:#27ae60; font-weight: 500;">▶️ Riattiva</a>
+                        {% elif p.stato_db != 'Concluso' %} <a href="/cambia_stato/{{ p.id }}/Sospeso" style="text-decoration:none; color:#f39c12; font-weight: 500;">⏸️ Sospendi</a>
                         {% endif %}
                     </div>
                 </div>
 
                 {% if p.warning_messaggio %}
-                <div
-                    style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba; margin-bottom: 15px;">
-                    <strong>Attenzione alla pianificazione:</strong><br>
-                    {{ p.warning_messaggio }}
-                    <br>
-                    <small>Anche se hai le risorse, i tempi sono molto stretti per la quantità di lavoro (densità
-                        elevata).</small>
+                <div style="background-color: #fff8e1; color: #856404; padding: 12px; border-radius: 6px; border-left: 4px solid #ffc107; margin-bottom: 15px;">
+                    <strong>⚠️ Attenzione ai tempi:</strong> {{ p.warning_messaggio }}
+                </div>
+                {% endif %}
+
+                {% if p.stato_db in ['In svolgimento', 'Pianificato'] and not p.fattibile %}
+                <div style="background-color: #fce4e4; color: #c0392b; padding: 12px; border-radius: 6px; border-left: 4px solid #c0392b; margin-bottom: 15px;">
+                    <strong>⛔ Progetto Fermo:</strong> {{ p.note_errore if p.note_errore else "Risorse insufficienti per coprire il carico." }}
                 </div>
                 {% endif %}
 
                 {% if p.assegnazioni_dettagliate %}
-                {% for assegnazione in p.assegnazioni_dettagliate %}
-                <div class="resource-row">
-                    <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-                        <span><strong>{{ assegnazione.nome_risorsa }}</strong> <span style="color:#666;">({{
-                                assegnazione.skill }})</span></span>
-                        <span>{{ assegnazione.ore_su_questo_progetto }}h</span>
+                <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
+                    {% for assegnazione in p.assegnazioni_dettagliate %}
+                    <div class="resource-row" style="margin-bottom: 12px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom: 3px;">
+                            <span><strong>{{ assegnazione.nome_risorsa }}</strong> <span style="font-size: 0.8rem; background: #eee; padding: 1px 5px; border-radius: 3px; color: #555;">{{ assegnazione.skill }}</span></span>
+                            <span style="font-family: monospace; font-weight: bold;">{{ assegnazione.ore_su_questo_progetto }}h</span>
+                        </div>
+                        {% set perc = (assegnazione.ore_su_questo_progetto / assegnazione.ore_nette_risorsa * 100) | int %}
+                        <div class="res-bar-bg"><div class="res-bar-fill" style="width: {{ perc }}%; background-color: {{ '#27ae60' if perc < 80 else '#e67e22' }};"></div></div>
                     </div>
-                    {% set perc = (assegnazione.ore_su_questo_progetto / assegnazione.ore_nette_risorsa * 100) | int %}
-                    <div class="res-bar-bg">
-                        <div class="res-bar-fill" style="width: {{ perc }}%;"></div>
-                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-
-                {% elif p.stato_db in ['In svolgimento', 'Pianificato'] and not p.fattibile %}
-                <div
-                    style="color: #c0392b; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #c0392b;">
-
-                    {# Titolo Errore #}
-                    {{ p.note_errore if p.note_errore else "⚠️ PROGETTO FERMO: Risorse insufficienti." }}
-
-                    <br>
-                    <small style="font-weight: normal; color: #555;">
-                        {% if "PERIODO" in p.note_errore %}
-                        Le date selezionate cadono interamente su giorni festivi o weekend. Controlla il calendario.
-                        {% else %}
-                        Nonostante il periodo sia lavorativo, non ci sono abbastanza risorse (Dev/Tester/PM) libere per
-                        coprire le ore richieste.
-                        {% endif %}
-                    </small>
-                </div>
-
-                {% else %}
-                {# Caso fallback se non ci sono dettagli e non è bloccato (es. Sospeso/Concluso) #}
-                <p style="color: #7f8c8d; font-style: italic;">Il progetto è sospeso o concluso, le risorse sono state
-                    liberate.</p>
+                {% elif p.stato_db == 'Concluso' %}
+                <p style="color: #7f8c8d; font-style: italic; text-align: center;">Progetto concluso.</p>
                 {% endif %}
             </div>
         </details>
@@ -272,39 +220,20 @@
         document.getElementById('pct_tester').value = data['Tester'] || 0;
         document.getElementById('pct_pm').value = data['PM'] || 0;
     }
-
     function validaPercentuali() {
         var p1 = parseInt(document.getElementById('pct_dev').value) || 0;
         var p2 = parseInt(document.getElementById('pct_tester').value) || 0;
         var p3 = parseInt(document.getElementById('pct_pm').value) || 0;
-        if ((p1 + p2 + p3) !== 100) {
-            alert("La somma delle percentuali deve essere 100%"); return false;
-        }
+        if ((p1 + p2 + p3) !== 100) { alert("⚠️ La somma delle percentuali deve essere 100%!"); return false; }
         return true;
     }
-
     document.addEventListener('DOMContentLoaded', function () {
-        var inputNames = [
-            'qty_dev', 'pct_dev',
-            'qty_tester', 'pct_tester',
-            'qty_pm', 'pct_pm'
-        ];
-
+        var inputNames = ['qty_dev', 'pct_dev', 'qty_tester', 'pct_tester', 'qty_pm', 'pct_pm'];
         inputNames.forEach(function (name) {
-            var inputElement = document.querySelector('input[name="' + name + '"]');
-
-            if (inputElement) {
-                inputElement.addEventListener('blur', function () {
-                    if (this.value === '') {
-                        this.value = '0';
-                    }
-                });
-
-                inputElement.addEventListener('focus', function () {
-                    if (this.value === '0') {
-                        this.value = '';
-                    }
-                });
+            var el = document.querySelector('input[name="' + name + '"]');
+            if (el) {
+                el.addEventListener('blur', function () { if (this.value === '') this.value = '0'; });
+                el.addEventListener('focus', function () { if (this.value === '0') this.value = ''; });
             }
         });
     });

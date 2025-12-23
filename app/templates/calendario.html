@@ -108,7 +108,11 @@
     }
     
     /* Nasconde scrollbar interne */
-    .fc-scroller { overflow-y: hidden !important; overflow-x: hidden !important; }
+    .fc-scroller { overflow-y: hidden !important; overflow-x: hidden !important; } 
+    .fc-listQuarter-view .fc-scroller {
+        overflow-y: auto !important; 
+        padding-right: 5px; 
+    }
 </style>
 
 <div class="card-calendar">
@@ -140,21 +144,40 @@
       initialView: 'dayGridMonth',
       locale: 'it',
       firstDay: 1,
-      height: '100%',
-      expandRows: true, 
+
+      height: '100%',      
+      expandRows: true,      
+      handleWindowResize: true, 
+      windowResizeDelay: 100,   
+      stickyHeaderDates: true,
       
       headerToolbar: {
-        left: 'title',
-        center: '',
-        right: 'today prev,next' 
+        left: 'prev,next today',        
+        center: 'title',                
+        right: 'dayGridWeek,dayGridMonth,listQuarter' 
       },
       
       buttonText: {
-        today: 'Oggi'
+        today:    'Oggi',
+        week:     'Settimana',
+        month:    'Mese',
+        day:      'Giorno',
+        listQuarter: 'Trimestre'
       },
-      
-      navLinks: false,
-      dayMaxEvents: true,
+
+      views: {
+        timeGridWeek: {
+            titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+        },
+        listQuarter: { 
+            type: 'listWeek', 
+            duration: { months: 3 }, 
+            buttonText: 'Trimestre' 
+        }
+      },
+
+      navLinks: true, 
+      dayMaxEvents: false,
       fixedWeekCount: false,
 
       eventSources: [
